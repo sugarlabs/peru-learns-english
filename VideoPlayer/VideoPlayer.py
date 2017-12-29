@@ -33,10 +33,10 @@ from Globales import COLORES
 class VideoPlayer(Gtk.EventBox):
 
     __gsignals__ = {
-    "full": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, []),
-    "endfile": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, []), }
+        "full": (GObject.SIGNAL_RUN_LAST,
+                 GObject.TYPE_NONE, []),
+        "endfile": (GObject.SIGNAL_RUN_LAST,
+                    GObject.TYPE_NONE, []), }
 
     def __init__(self):
 
@@ -119,7 +119,7 @@ class VideoPlayer(Gtk.EventBox):
     def stop(self):
         if self.player:
             # FIXME: No funciona en la XO con Fedora 11
-            #volumen = float("{:.1f}".format(
+            # volumen = float("{:.1f}".format(
             #    self.progress.volumen.get_value() * 10))
             self.player.stop()
             self.player.disconnect_by_func(self.__endfile)

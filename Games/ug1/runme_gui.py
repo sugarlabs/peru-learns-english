@@ -13,6 +13,7 @@ import spyral
 import pygame
 from runme import Escena
 
+
 class GameWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self)
@@ -24,7 +25,8 @@ class GameWindow(Gtk.Window):
 
         self.connect("visibility-notify-event", self.redraw)
         self.pygamecanvas.set_events(Gdk.BUTTON_PRESS_MASK)
-        self.pygamecanvas.connect("button-press-event", self.pygamecanvas.grab_focus)
+        self.pygamecanvas.connect(
+            "button-press-event", self.pygamecanvas.grab_focus)
 
         self.add(self.pygamecanvas)
         GObject.timeout_add(300, self.pump)
@@ -41,13 +43,14 @@ class GameWindow(Gtk.Window):
         pygame.event.pump()
 
     def run_game(self):
-        spyral.director.init((700,700), fullscreen=False, max_fps=30)
-        self.game = Escena(self) #JUEGO.Juego(self, callback=self.game_ready)
+        spyral.director.init((700, 700), fullscreen=False, max_fps=30)
+        self.game = Escena(self)  # JUEGO.Juego(self, callback=self.game_ready)
         spyral.director.push(self.game)
         self.start()
 
     def start(self):
-        spyral.director.run(sugar = True)
+        spyral.director.run(sugar=True)
+
 
 if __name__ == "__main__":
     w = GameWindow()

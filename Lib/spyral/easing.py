@@ -1,18 +1,19 @@
 """
-This module provides a set of built-in easings which can be used by any 
-game. Additionally, custom easings can be built. An easing should be a 
-function (or callable) which takes in a sprite, and a time delta which 
-is normalized to [0,1], and returns the state of easing at that time. 
-See the source code of this module for some example implementations. 
-Built-in easings are stateless, so the same animation can be used many 
-times or on many different objects. Custom easings do not have to be 
-stateless. 
+This module provides a set of built-in easings which can be used by any
+game. Additionally, custom easings can be built. An easing should be a
+function (or callable) which takes in a sprite, and a time delta which
+is normalized to [0,1], and returns the state of easing at that time.
+See the source code of this module for some example implementations.
+Built-in easings are stateless, so the same animation can be used many
+times or on many different objects. Custom easings do not have to be
+stateless.
 
-Visualizations of these easings are available at 
+Visualizations of these easings are available at
 `http://easings.net <http://easings.net>`_ .
 """
 
 import math
+
 
 def Linear(start=0.0, finish=1.0):
     """
@@ -93,11 +94,11 @@ def Iterate(items, times=1):
     """
     Iterate over a list of items. This particular easing is very useful
     for creating image animations, e.g.::
-    
+
         walk_images = [spyral.Image('f1.png'), spyral.Image('f2.png'), spyral.Image('f3.png')]
         walking_animation = Animation('image', easing.Iterate(walk_images), 2.0, loop=True)
         my_sprite.animate(walking_animation)
-    
+
     :param list items: A list of items (e.g., a list of
                        :class:`Images <spyral.Image>`).
     :param int times: The number of times to iterate through the list.

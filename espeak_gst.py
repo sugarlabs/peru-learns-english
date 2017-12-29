@@ -18,7 +18,6 @@ import logging
 logger = logging.getLogger('speak')
 
 import gi
-gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst
 
@@ -27,10 +26,11 @@ import espeak
 PITCH_MAX = 200
 RATE_MAX = 200
 
+
 class AudioGrabGst(espeak.BaseAudioGrab):
     def speak(self, text, pitch, rate, voice="en-gb"):
         # XXX workaround for http://bugs.sugarlabs.org/ticket/1801
-        if not [i for i in unicode(text, 'utf-8', errors='ignore') \
+        if not [i for i in unicode(text, 'utf-8', errors='ignore')
                 if i.isalnum()]:
             return
 
@@ -41,7 +41,7 @@ class AudioGrabGst(espeak.BaseAudioGrab):
         rate = int(rate) + 110
 
         logger.debug('pitch=%d rate=%d voice=%s text=%s' % (pitch, rate,
-                voice, text))
+                                                            voice, text))
 
         src.props.text = text
         src.props.pitch = pitch
@@ -50,14 +50,15 @@ class AudioGrabGst(espeak.BaseAudioGrab):
 
         self.restart_sound_device()
 
+
 def voices():
     out = []
 
     for i in gst.element_factory_make('espeak').props.voices:
         name, language, dialect = i
-        #if name in ('en-rhotic','english_rp','english_wmids'):
-            # these voices don't produce sound
-         #   continue
+        # if name in ('en-rhotic','english_rp','english_wmids'):
+        # these voices don't produce sound
+        #   continue
         out.append((language, name))
 
     return out

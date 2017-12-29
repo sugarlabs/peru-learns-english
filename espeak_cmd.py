@@ -25,6 +25,7 @@ import espeak
 PITCH_MAX = 99
 RATE_MAX = 99
 
+
 class AudioGrabCmd(espeak.BaseAudioGrab):
     def speak(self, text, pitch, rate, voice="en-gb"):
         self.make_pipeline('filesrc name=file-source')
@@ -34,8 +35,8 @@ class AudioGrabCmd(espeak.BaseAudioGrab):
         wavpath = "/tmp/speak.wav"
 
         subprocess.call(["espeak", "-w", wavpath, "-p", str(pitch),
-                "-s", str(rate), "-v", voice, text],
-                stdout=subprocess.PIPE)
+                         "-s", str(rate), "-v", voice, text],
+                        stdout=subprocess.PIPE)
 
         self.stop_sound_device()
 
@@ -45,18 +46,19 @@ class AudioGrabCmd(espeak.BaseAudioGrab):
         # play
         self.restart_sound_device()
 
+
 def voices():
     out = []
     result = subprocess.Popen(["espeak", "--voices"], stdout=subprocess.PIPE) \
-            .communicate()[0]
+        .communicate()[0]
 
     for line in result.split('\n'):
         m = re.match(r'\s*\d+\s+([\w-]+)\s+([MF])\s+([\w_-]+)\s+(.+)', line)
         if not m:
             continue
         language, gender, name, stuff = m.groups()
-        if stuff.startswith('mb/'): #or \ 
-                #name in ('en-rhotic','english_rp','english_wmids'):
+        if stuff.startswith('mb/'):  # or \
+                # name in ('en-rhotic','english_rp','english_wmids'):
             # these voices don't produce sound
             continue
         out.append((language, name))

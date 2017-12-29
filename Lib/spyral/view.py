@@ -1,6 +1,7 @@
 import spyral
 from weakref import ref as _wref
 
+
 class View(object):
     """
     Creates a new view with a scene or view as a parent. A view is a collection
@@ -8,21 +9,22 @@ class View(object):
     cropped, scaled, offset, hidden, etc. A View can also have a ``mask``, in
     order to treat it as a single collidable object. Like a Sprite, a View cannot
     be moved between Scenes.
-    
+
     :param parent: The view or scene that this View belongs in.
     :type parent: :func:`View <spyral.View>` or :func:`Scene <spyral.Scene>`
     """
+
     def __init__(self, parent):
 
         self._size = spyral.Vec2D(parent.size)
         self._output_size = spyral.Vec2D(parent.size)
         self._crop_size = spyral.Vec2D(parent.size)
-        self._pos = spyral.Vec2D(0,0)
+        self._pos = spyral.Vec2D(0, 0)
         self._crop = False
         self._visible = True
         self._parent = _wref(parent)
         self._anchor = 'topleft'
-        self._offset = spyral.Vec2D(0,0)
+        self._offset = spyral.Vec2D(0, 0)
         self._layers = []
         self._layer = None
         self._mask = None
@@ -69,7 +71,7 @@ class View(object):
     def _get_mask(self):
         """
         Return this View's mask, a spyral.Rect representing the collidable area.
-        
+
         :rtype: :class:`Rect <spyral.Rect>` if this value has been set,
                 otherwise it will be ``None``.
         """
@@ -113,13 +115,13 @@ class View(object):
         Recalculates the offset of this View.
         """
         if self._mask:
-            self._offset = spyral.util._anchor_offset(self._anchor, 
-                                                     self._mask.size[0], 
-                                                     self._mask.size[1])
+            self._offset = spyral.util._anchor_offset(self._anchor,
+                                                      self._mask.size[0],
+                                                      self._mask.size[1])
         else:
-            self._offset = spyral.util._anchor_offset(self._anchor, 
-                                                     self._size[0], 
-                                                     self._size[1])
+            self._offset = spyral.util._anchor_offset(self._anchor,
+                                                      self._size[0],
+                                                      self._size[1])
 
     # Properties
     def _get_pos(self):
@@ -156,7 +158,7 @@ class View(object):
         appendix.
 
         .. note:
-            
+
             Layers can only be set once.
         """
         return tuple(self._layers)
@@ -359,14 +361,13 @@ class View(object):
         self._crop = crop
         self._changed()
 
-
     def _get_parent(self):
         """
-        The first parent :class:`View <spyral.View>` or 
+        The first parent :class:`View <spyral.View>` or
         :class:`Scene <spyral.Scene>` that this View belongs to. Read-only.
         """
         return self._parent()
-        
+
     def _get_scene(self):
         """
         The top-most parent :class:`Scene <spyral.Scene>` that this View
@@ -461,10 +462,10 @@ class View(object):
         """
         if self._mask is not None:
             pos = self._mask.topleft - self._offset
-            area = spyral.Rect((0,0), self._mask.size)
+            area = spyral.Rect((0, 0), self._mask.size)
         else:
             pos = self._pos - self._offset
-            area = spyral.Rect((0,0), self.size)
+            area = spyral.Rect((0, 0), self.size)
         c = spyral.util._CollisionBox(pos, area)
         warped_box = self._parent()._warp_collision_box(c)
         self._scene()._set_collision_box(self, warped_box.rect)
@@ -495,12 +496,12 @@ class View(object):
         Returns whether this view is colliding with the sprite or view.
 
         :param other: A sprite or a view
-        :type other: :class:`Sprite <spyral.Sprite>` or a 
+        :type other: :class:`Sprite <spyral.Sprite>` or a
                      :class:`View <spyral.View>`
         :returns: A ``bool``
         """
         return self._scene().collide_sprite(self, other)
-        
+
     def collide_point(self, pos):
         """
         Returns whether this view is colliding with the point.
@@ -510,7 +511,7 @@ class View(object):
         :returns: A ``bool``
         """
         return self._scene().collide_point(self, pos)
-        
+
     def collide_rect(self, rect):
         """
         Returns whether this view is colliding with the rect.

@@ -23,8 +23,11 @@ import sys
 import os
 
 game_dir = os.path.abspath(os.path.dirname(__file__))
+
+
 def gamedir(archivo):
     return os.path.join(game_dir, archivo)
+
 
 sys.path.insert(1, gamedir("../../Lib/"))
 
@@ -38,6 +41,7 @@ pygame.mixer.init()
 
 SIZE = (700, 700)
 TILE = (64, 64)
+
 
 def wrap(text, length):
     """
@@ -55,11 +59,13 @@ def wrap(text, length):
             lines.append(line)
     return '\n'.join(lines)
 
+
 font_path = gamedir("../fonts/DejaVuSans.ttf")
 topic_dir = gamedir("../../Topics/Topic_2/")
 
 VOCABULARIO = []
 CANT_PALABRAS = 0
+
 
 def obtener_palabra(topic_dir=topic_dir):
     global VOCABULARIO, CANT_PALABRAS
@@ -81,6 +87,7 @@ def obtener_palabra(topic_dir=topic_dir):
 
     return palabra, palabra_png
 
+
 def reset_vocabulario():
     global VOCABULARIO, CANT_PALABRAS
     VOCABULARIO = []
@@ -93,6 +100,7 @@ class DelayAnimation(spyral.Animation):
     Animation which performs no actions. Useful for lining up appended
     and parallel animations so that things run at the right times.
     """
+
     def __init__(self, duration=1.0):
         self.absolute = False
         self.properties = set([])
@@ -132,7 +140,8 @@ class Escena(spyral.Scene):
 
         spyral.event.register("system.quit", spyral.director.pop, scene=self)
         spyral.event.register("director.scene.enter", self.l.llover, scene=self)
-        spyral.event.register("input.keyboard.down.esc", self.escape, scene=self)
+        spyral.event.register("input.keyboard.down.esc",
+                              self.escape, scene=self)
         spyral.event.register("Tablero.score", self.score)
 
     def score(self):
@@ -146,8 +155,10 @@ class Escena(spyral.Scene):
             pass
 
     def escape(self):
-        spyral.event.unregister("Lluvia.y.animation.end", self.scene.l.finalizar)
-        spyral.event.unregister("Lluvia.demora.animation.end", self.scene.l.sonar_explosion)
+        spyral.event.unregister("Lluvia.y.animation.end",
+                                self.scene.l.finalizar)
+        spyral.event.unregister(
+            "Lluvia.demora.animation.end", self.scene.l.sonar_explosion)
         self.scene.l.stop_all_animations()
         self.scene.l.stop_all_animations()
         self.scene.l.visible = False
@@ -159,16 +170,18 @@ class Escena(spyral.Scene):
         self.scene.tablero.visible = False
         #spyral.event.unregister("Lluvia.y.animation.end", self.scene.l.finalizar)
         #spyral.event.unregister("Lluvia.demora.animation.end", self.scene.l.sonar_explosion)
-        #self.scene.l.stop_all_animations()
-        #self.scene.l.stop_all_animations()
+        # self.scene.l.stop_all_animations()
+        # self.scene.l.stop_all_animations()
         #self.scene.l.visible = False
         self.scene.v.set_text("GAME OVER")
         self.scene.v.stop_all_animations()
         self.scene.j.set_mirame()
         spyral.event.unregister("input.keyboard.down.esc", self.escape)
-        self.the_question = Dialogo(self, "Play again?", self.the_question_click)
-        spyral.event.unregister("input.keyboard.down.*", self.tablero.procesar_tecla)
-        #self.scene.j.set_deambular()
+        self.the_question = Dialogo(
+            self, "Play again?", self.the_question_click)
+        spyral.event.unregister("input.keyboard.down.*",
+                                self.tablero.procesar_tecla)
+        # self.scene.j.set_deambular()
 
     def the_question_click(self, pos):
         if self.the_question.collide_point(pos):
@@ -220,8 +233,10 @@ class Tablero(spyral.Sprite):
 
         self.mostrar(self.text, "")
 
-        spyral.event.register("input.keyboard.down.*", self.procesar_tecla, scene=self.scene)
-        spyral.event.register("Tablero.reset.animation.end", self.reset, scene=self.scene)
+        spyral.event.register("input.keyboard.down.*",
+                              self.procesar_tecla, scene=self.scene)
+        spyral.event.register("Tablero.reset.animation.end",
+                              self.reset, scene=self.scene)
 
         self.blup_snd = pygame.mixer.Sound(gamedir("sonidos/Randomize3.ogg"))
         self.hit_snd = pygame.mixer.Sound(gamedir("sonidos/Pickup_Coin.ogg"))
@@ -237,7 +252,8 @@ class Tablero(spyral.Sprite):
         self.mostrar(self.palabra, self.acertadas)
         self.scene.l.reset()
         self.scene.v.reset()
-        spyral.event.register("input.keyboard.down.*", self.procesar_tecla, scene=self.scene)
+        spyral.event.register("input.keyboard.down.*",
+                              self.procesar_tecla, scene=self.scene)
 
     def set_text(self, text):
         self.image = self.font.render(text)
@@ -338,19 +354,22 @@ class Lluvia(spyral.Sprite):
 
         self.explosion_frames.append(
             self.explosion_full.copy().crop((13 * explosion_size, 0),
-            (explosion_size, explosion_size)))
+                                            (explosion_size, explosion_size)))
 
         for i in range(0, 13):
             self.explosion_frames.append(
                 self.explosion_full.copy().crop((i * explosion_size, 0),
-                (explosion_size, explosion_size)))
+                                                (explosion_size, explosion_size)))
 
-        spyral.event.register("Lluvia.y.animation.end", self.finalizar, scene=self.scene)
-        spyral.event.register("Lluvia.demora.animation.end", self.sonar_explosion)
+        spyral.event.register("Lluvia.y.animation.end",
+                              self.finalizar, scene=self.scene)
+        spyral.event.register(
+            "Lluvia.demora.animation.end", self.sonar_explosion)
         self.scale = 2
 
         self.explotar_snd = pygame.mixer.Sound(gamedir("sonidos/Explosion.ogg"))
-        self.alarm_snd = pygame.mixer.Sound(gamedir("sonidos/missile_alarm.ogg"))
+        self.alarm_snd = pygame.mixer.Sound(
+            gamedir("sonidos/missile_alarm.ogg"))
 
     def reset(self):
         self.x = self.scene.width / 2 + random.randint(0, 600) - 300
@@ -367,17 +386,17 @@ class Lluvia(spyral.Sprite):
             self.alarm_snd.play()
 
         tick = (spyral.director.get_tick() - self.start_time) / 300.0
-        if tick>16:
+        if tick > 16:
             tick = 16
         p = spyral.Animation("y",
-            spyral.easing.CubicIn(0, self.scene.height - 75),
-            duration=10 + len(self.scene.tablero.palabra) * 3 - tick)
+                             spyral.easing.CubicIn(0, self.scene.height - 75),
+                             duration=10 + len(self.scene.tablero.palabra) * 3 - tick)
         self.animate(p)
 
     def finalizar(self, ganamos=False):
         if not self.scene.tablero.check_completos():
             spyral.event.unregister("input.keyboard.down.*",
-                self.scene.tablero.procesar_tecla)
+                                    self.scene.tablero.procesar_tecla)
             self.scene.tablero.set_text("SCORE: " + str(self.scene.puntaje))
             if not ganamos:
                 self.scene.v.set_text("GAME OVER")
@@ -387,14 +406,15 @@ class Lluvia(spyral.Sprite):
                 self.scene.endgame()
             else:
                 self.scene.background = self.scene.img_orig
-                spyral.event.unregister("Lluvia.y.animation.end", self.finalizar)
-                spyral.event.unregister("Lluvia.demora.animation.end", self.sonar_explosion)
+                spyral.event.unregister(
+                    "Lluvia.y.animation.end", self.finalizar)
+                spyral.event.unregister(
+                    "Lluvia.demora.animation.end", self.sonar_explosion)
                 self.stop_all_animations()
                 self.stop_all_animations()
                 self.visible = False
                 self.scene.v.set_text("YOU SAVED THE CITY!")
                 self.scene.j.set_mirame()
-
 
     def explotar(self, wait=0):
         n = spyral.Animation("image", spyral.easing.Iterate(
@@ -408,13 +428,13 @@ class Lluvia(spyral.Sprite):
         self.animate(n)
 
         d = DelayAnimation(wait)
-        d.property="demora"
+        d.property = "demora"
         self.animate(d)
-
 
     def sonar_explosion(self):
         if not Intro.MUTE:
             self.explotar_snd.play()
+
 
 class Visualizador(spyral.Sprite):
 
@@ -432,11 +452,11 @@ class Visualizador(spyral.Sprite):
 
     def set_text(self, text):
         nueva = spyral.Image(size=(self.width - self.margen,
-            self.height - self.margen)).fill((255, 255, 255))
+                                   self.height - self.margen)).fill((255, 255, 255))
         self.image.draw_image(nueva,
-            position=(self.margen / 2, 0), anchor="midleft")
+                              position=(self.margen / 2, 0), anchor="midleft")
         self.image.draw_image(self.render_text(text),
-            position=(0, 0), anchor="midleft")
+                              position=(0, 0), anchor="midleft")
 
     def reset(self, txt=None, img=None, loop=False):
         self.stop_all_animations()
@@ -451,23 +471,24 @@ class Visualizador(spyral.Sprite):
                 self.palabra_png = self.scene.tablero.archivo_img
             except AttributeError:
                 self.palabra_png = spyral.Image(size=(self.width - self.margen,
-                    self.height - self.margen)).fill((255, 255, 255))
+                                                      self.height - self.margen)).fill((255, 255, 255))
         else:
             self.palabra_png = img
 
         image1 = self.image.copy()
         image1.draw_image(self.render_image(self.palabra_png),
-            position=(25, 0), anchor="midleft")
+                          position=(25, 0), anchor="midleft")
 
         image2 = self.image.copy()
 
         nueva = spyral.Image(size=(self.width - self.margen,
-            self.height - self.margen)).fill((255, 255, 255))
+                                   self.height - self.margen)).fill((255, 255, 255))
         image2.draw_image(nueva,
-            position=(self.margen / 2, 0), anchor="midleft")
+                          position=(self.margen / 2, 0), anchor="midleft")
         image2.draw_image(self.render_text(self.text),
-            position=(0, 0), anchor="midleft")
-        a = spyral.Animation("image", spyral.easing.Iterate([image1, image2], 6), 6, loop=loop)
+                          position=(0, 0), anchor="midleft")
+        a = spyral.Animation("image", spyral.easing.Iterate(
+            [image1, image2], 6), 6, loop=loop)
         self.animate(a)
 
     def render_image(self, image):
@@ -476,7 +497,7 @@ class Visualizador(spyral.Sprite):
                 self.width - self.margen, self.height - self.margen))
         except pygame.error:
             nueva = spyral.Image(size=(self.width - self.margen,
-                self.height - self.margen)).fill((255, 255, 255))
+                                       self.height - self.margen)).fill((255, 255, 255))
         return nueva
 
     def render_text(self, text):
@@ -490,7 +511,7 @@ class Visualizador(spyral.Sprite):
         ln = 0
         for linea in lineas:
             bloque.draw_image(image=self.font.render(linea),
-                position=(0, ln * self.line_height), anchor="midtop")
+                              position=(0, ln * self.line_height), anchor="midtop")
             ln = ln + 1
         return bloque
 
@@ -582,8 +603,9 @@ class Jugador(spyral.Sprite):
 
         # Calculamos el tiempo para obtener una velocidad constante
         a = spyral.Animation("image",
-            spyral.easing.Iterate(frames), duration=tiempo, loop=True)
-        b = spyral.Animation("x", spyral.easing.Sine(100), shift=self.scene.width/2, duration=tiempo, loop=True)
+                             spyral.easing.Iterate(frames), duration=tiempo, loop=True)
+        b = spyral.Animation("x", spyral.easing.Sine(
+            100), shift=self.scene.width / 2, duration=tiempo, loop=True)
 
         c = a & b
         c.property = "deambular"
@@ -592,7 +614,6 @@ class Jugador(spyral.Sprite):
             self.animate(c)
         except ValueError:
             pass
-
 
     def set_caminar_x(self, x, disparar=False):
         if self.estado in ["caminando"]:
@@ -607,23 +628,23 @@ class Jugador(spyral.Sprite):
         else:
             direccion = self.west
         a = spyral.Animation("image",
-            spyral.easing.Iterate(direccion, tiempo), tiempo)
+                             spyral.easing.Iterate(direccion, tiempo), tiempo)
         b = spyral.Animation("x", spyral.easing.Linear(self.x, x), tiempo)
         d = spyral.Animation("image",
-            spyral.easing.Iterate([self.quieto], 0.1), 0.1)
+                             spyral.easing.Iterate([self.quieto], 0.1), 0.1)
         c = a & b
         c = c + d
         if disparar:
             z = spyral.Animation("image",
-                spyral.easing.Iterate(self.fire, 1), 1)
+                                 spyral.easing.Iterate(self.fire, 1), 1)
             c = c + z
         c.property = "traslado"
         try:
             self.animate(c)
         except ZeroDivisionError:
             print "ZERODIVISIONERROR!!!!"
-            print "self.x",self.x
-            print "x",x
+            print "self.x", self.x
+            print "x", x
             print "tiempo", tiempo
             print "duracion", duracion
 
@@ -646,16 +667,16 @@ class Jugador(spyral.Sprite):
             self.quieto = self.northq
 
         a = spyral.Animation("image",
-            spyral.easing.Iterate(direccion, tiempo), tiempo)
+                             spyral.easing.Iterate(direccion, tiempo), tiempo)
         b = spyral.Animation("y", spyral.easing.Linear(self.y, y), tiempo)
         d = spyral.Animation("image",
-            spyral.easing.Iterate([self.quieto], 0.1), 0.1)
+                             spyral.easing.Iterate([self.quieto], 0.1), 0.1)
         c = a & b
         c = c + d
 
         if disparar:
             z = spyral.Animation("image",
-                spyral.easing.Iterate(self.fire, 1), 1)
+                                 spyral.easing.Iterate(self.fire, 1), 1)
             c = c + z
         c.property = "traslado"
         self.animate(c)
@@ -674,7 +695,7 @@ class Dialogo(spyral.Sprite):
         self.layer = "primer"
 
         self.image = spyral.Image(filename=gamedir("images/Menu_1.png"))
-        #self.image.draw_rect(color=(128,128,128),
+        # self.image.draw_rect(color=(128,128,128),
         #        position=(0,0), size=(self.height,self.width))
 
         font_path = gamedir("../fonts/DejaVuSans.ttf")
@@ -683,7 +704,7 @@ class Dialogo(spyral.Sprite):
 
         nueva = self.set_text(texto)
         self.image.draw_image(nueva,
-            position=(self.margen / 2, -17), anchor="midleft")
+                              position=(self.margen / 2, -17), anchor="midleft")
 
         spyral.event.register("input.mouse.down.left", callback)
         spyral.event.register("input.keyboard.down.return", self.goplay)
@@ -705,7 +726,7 @@ class Dialogo(spyral.Sprite):
         ln = 0
         for linea in lineas:
             bloque.draw_image(image=self.font.render(linea),
-                position=(0, ln * self.line_height), anchor="midtop")
+                              position=(0, ln * self.line_height), anchor="midtop")
             ln = ln + 1
 
         self.scale = 2
@@ -724,7 +745,7 @@ class Texto(spyral.Sprite):
         self.layer = "primer"
 
         self.image = spyral.Image(filename=gamedir("images/Menu_2.png"))
-        #self.image.draw_rect(color=(128,128,128),
+        # self.image.draw_rect(color=(128,128,128),
         #        position=(0,0), size=(self.height,self.width))
 
         font_path = gamedir("../fonts/DejaVuSans.ttf")
@@ -733,7 +754,7 @@ class Texto(spyral.Sprite):
 
         nueva = self.set_text(texto)
         self.image.draw_image(nueva,
-            position=(self.margen / 2, 0), anchor="midleft")
+                              position=(self.margen / 2, 0), anchor="midleft")
 
         self.scale = 1.3
 
@@ -749,7 +770,7 @@ class Texto(spyral.Sprite):
         ln = 0
         for linea in lineas:
             bloque.draw_image(image=self.font.render(linea),
-                position=(0, ln * self.line_height), anchor="midtop")
+                              position=(0, ln * self.line_height), anchor="midtop")
             ln = ln + 1
 
         return bloque
@@ -764,7 +785,7 @@ class Camino(spyral.Sprite):
         self.anchor = "midbottom"
         self.layer = "abajo2"
         self.image = spyral.Image(filename=gamedir("images/entrada.png"))
-        self.pos = spyral.Vec2D(self.scene.size)/2
+        self.pos = spyral.Vec2D(self.scene.size) / 2
 
     def temblar(self):
         m = spyral.Animation("x", spyral.easing.Iterate(
@@ -798,7 +819,8 @@ class Intro(spyral.Scene):
         self.terraza = Terraza(self)
 
         spyral.event.register("system.quit", spyral.director.pop, scene=self)
-        spyral.event.register("input.keyboard.down.space", self.goplay, scene=self)
+        spyral.event.register("input.keyboard.down.space",
+                              self.goplay, scene=self)
         spyral.event.register("director.scene.enter", self.intro0, scene=self)
 
         pygame.mixer.music.load(gamedir('musica/alienblues.ogg'))
@@ -808,7 +830,7 @@ class Intro(spyral.Scene):
             Intro.gameview = gameview
 
     def mute(self, value):
-        if value==True:
+        if value == True:
             pygame.mixer.music.pause()
         else:
             pygame.mixer.music.play()
@@ -820,7 +842,8 @@ class Intro(spyral.Scene):
         spyral.director.run(sugar=True)
 
     def intro0(self):
-        a = spyral.Animation("y", spyral.easing.Linear(self.camino.y, self.scene.height), duration=4)
+        a = spyral.Animation("y", spyral.easing.Linear(
+            self.camino.y, self.scene.height), duration=4)
         self.camino.animate(a)
 
         spyral.event.register("Camino.y.animation.end", self.intro1, scene=self)
@@ -836,8 +859,9 @@ class Intro(spyral.Scene):
         self.mensaje.y = 95
         self.mensaje.x = 115
 
-        self.j.set_caminar_y(self.scene.height/2)
-        spyral.event.register("Jugador.traslado.animation.end", self.intro2, scene=self)
+        self.j.set_caminar_y(self.scene.height / 2)
+        spyral.event.register(
+            "Jugador.traslado.animation.end", self.intro2, scene=self)
 
     def intro2(self):
         spyral.event.unregister("Jugador.traslado.animation.end", self.intro2)
@@ -847,15 +871,17 @@ class Intro(spyral.Scene):
         self.mensaje.y = self.height / 2 - 70
 
         self.d = DelayAnimation(3)
-        self.d.property="demora"
+        self.d.property = "demora"
         self.j.animate(self.d)
 
-        spyral.event.register("Jugador.demora.animation.end", self.intro3, scene=self)
+        spyral.event.register(
+            "Jugador.demora.animation.end", self.intro3, scene=self)
 
     def intro3(self):
         spyral.event.unregister("Jugador.demora.animation.end", self.intro3)
-        self.j.set_caminar_y(self.scene.height-self.j.height)
-        spyral.event.register("Jugador.traslado.animation.end", self.intro4, scene=self)
+        self.j.set_caminar_y(self.scene.height - self.j.height)
+        spyral.event.register(
+            "Jugador.traslado.animation.end", self.intro4, scene=self)
 
     def intro4(self):
         spyral.event.unregister("Jugador.traslado.animation.end", self.intro4)
@@ -864,18 +890,20 @@ class Intro(spyral.Scene):
         self.mensaje.y = self.height - 200
 
         self.d = DelayAnimation(3)
-        self.d.property="demora"
+        self.d.property = "demora"
         self.j.animate(self.d)
 
-        spyral.event.register("Jugador.demora.animation.end", self.intro5, scene=self)
+        spyral.event.register(
+            "Jugador.demora.animation.end", self.intro5, scene=self)
 
     def intro5(self):
         spyral.event.unregister("Jugador.demora.animation.end", self.intro5)
-        a = spyral.Animation("y", spyral.easing.Linear(self.scene.height, 0), duration=4)
+        a = spyral.Animation("y", spyral.easing.Linear(
+            self.scene.height, 0), duration=4)
         self.camino.animate(a)
 
         img = spyral.Image(filename=gamedir(
-        "images/Peru_Machu_Picchu_Sunrise.jpg")).scale(self.scene.size)
+            "images/Peru_Machu_Picchu_Sunrise.jpg")).scale(self.scene.size)
 
         self.v = Visualizador(self)
         self.v.reset("Press space to begin.", loop=True)
@@ -900,8 +928,10 @@ class Title(spyral.Sprite):
         self.pos = (scene.width / 2, scene.height / 2)
         self.anchor = "center"
 
+
 def main():
     spyral.director.push(Intro())
+
 
 if __name__ == "__main__":
     spyral.director.init(SIZE, fullscreen=False)

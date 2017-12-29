@@ -5,6 +5,7 @@ import os
 import spyral
 import pygame
 
+
 class DebugText(spyral.Sprite):
     """
     A simple Sprite subclass for rapidly rendering text on the screen.
@@ -23,12 +24,13 @@ class DebugText(spyral.Sprite):
         to read-only).
 
     """
+
     def __init__(self, scene, text, color=(0, 0, 0)):
         spyral.Sprite.__init__(self, scene)
         self._font = spyral.Font(spyral._get_spyral_path() +
-                                os.path.join("resources", "fonts",
-                                             "DejaVuSans.ttf"),
-                                15, color)
+                                 os.path.join("resources", "fonts",
+                                              "DejaVuSans.ttf"),
+                                 15, color)
         self._render(text)
 
     def _render(self, text):
@@ -39,6 +41,7 @@ class DebugText(spyral.Sprite):
         self.image = self._font.render(text)
     # Intentionally impossible to get text; don't rely on it!
     text = property(lambda self: "", _render)
+
 
 class FPSSprite(spyral.Sprite):
     """
@@ -52,12 +55,13 @@ class FPSSprite(spyral.Sprite):
     :type color: A three-tuple.
 
     """
+
     def __init__(self, scene, color):
         spyral.Sprite.__init__(self)
         self._font = spyral.Font(spyral._get_spyral_path() +
-                                os.path.join("resources", "fonts",
-                                             "DejaVuSans.ttf"),
-                                15, color)
+                                 os.path.join("resources", "fonts",
+                                              "DejaVuSans.ttf"),
+                                 15, color)
         self._render(0, 0)
         self._update_in = 5
         spyral.event.register("director.update", self._update, scene=scene)

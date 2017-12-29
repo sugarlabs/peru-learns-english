@@ -42,8 +42,8 @@ from Globales import Dialog
 class FlashCardView(Gtk.EventBox):
 
     __gsignals__ = {
-    "video": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
+        "video": (GObject.SIGNAL_RUN_FIRST,
+                  GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
 
     def __init__(self):
 
@@ -84,23 +84,26 @@ class FlashCardView(Gtk.EventBox):
     def __show_answer(self, widget):
         index = self.index_select
         respuesta = self.vocabulario[index][3] if len(self.vocabulario[index]) > 3 else \
-                    self.vocabulario[index][1]
+            self.vocabulario[index][1]
         self.derecha.label.set_text(
             self.vocabulario[index][1].replace(" ", "\n"))
-        self.cabecera.question_label.set_markup("<b>"+respuesta+"</b>")
+        self.cabecera.question_label.set_markup("<b>" + respuesta + "</b>")
         if self.click_event:
             self.flashcard.disconnect(self.click_event)
             self.click_event = None
-        self.click_event = self.flashcard.connect("button-press-event", self.repetir_respuesta, respuesta)
+        self.click_event = self.flashcard.connect(
+            "button-press-event", self.repetir_respuesta, respuesta)
         #self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
         GObject.idle_add(self.__show_phrase, respuesta)
 
     def __show_phrase(self, respuesta):
         decir_demorado(170, 50, 0, "en-gb", respuesta)
-        self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
+        self.cabecera.question_label.modify_fg(
+            Gtk.StateFlags.NORMAL, COLORES["window"])
         self.cabecera.question_label.set_markup(respuesta)
         if not self.click_event:
-            self.click_event = self.flashcard.connect("button-press-event", self.repetir_respuesta, respuesta)
+            self.click_event = self.flashcard.connect(
+                "button-press-event", self.repetir_respuesta, respuesta)
 
     def __siguiente(self, widget, respuesta):
         """
@@ -114,14 +117,14 @@ class FlashCardView(Gtk.EventBox):
         elif respuesta == 3:
             r = 0
         guardar(self.user, self.topic,
-            self.vocabulario[self.index_select][0], r)
+                self.vocabulario[self.index_select][0], r)
         if self.index_select < len(self.vocabulario) - 1:
             self.index_select += 1
             GObject.timeout_add(500, self.__load, self.index_select)
         else:
             dialog = Dialog("Congratulations!", self.get_toplevel(),
-                ("OK", Gtk.ResponseType.ACCEPT),
-                "Memorization task completed for today.")
+                            ("OK", Gtk.ResponseType.ACCEPT),
+                            "Memorization task completed for today.")
             dialog.run()
             dialog.destroy()
             self.emit("video", self.topic)
@@ -131,22 +134,24 @@ class FlashCardView(Gtk.EventBox):
         Carga una nueva palabra del Vocabulario
         """
         path = os.path.join(self.topic, "Imagenes",
-            "%s.png" % self.vocabulario[index][0])
+                            "%s.png" % self.vocabulario[index][0])
         if self.imagenplayer:
             self.imagenplayer.stop()
             del(self.imagenplayer)
             self.imagenplayer = False
         self.imagenplayer = ImagePlayer(self.flashcard.drawing, path)
         #self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
-        pregunta = self.vocabulario[index][2] if len(self.vocabulario[index]) > 2 else ""
+        pregunta = self.vocabulario[index][2] if len(
+            self.vocabulario[index]) > 2 else ""
         if pregunta == "":
             pregunta = "What is this?"
-        self.cabecera.question_label.set_markup("<b>"+pregunta+"</b>")
+        self.cabecera.question_label.set_markup("<b>" + pregunta + "</b>")
 
         if self.click_event:
             self.flashcard.disconnect(self.click_event)
             self.click_event = None
-        self.click_event = self.flashcard.connect("button-press-event", self.repetir_pregunta, pregunta)
+        self.click_event = self.flashcard.connect(
+            "button-press-event", self.repetir_pregunta, pregunta)
         GObject.idle_add(self.__activar, pregunta)
         return False
 
@@ -155,7 +160,7 @@ class FlashCardView(Gtk.EventBox):
             self.flashcard.disconnect(self.click_event)
             self.click_event = None
         self.click_event = None
-        self.cabecera.question_label.set_markup("<b>"+pregunta+"</b>")
+        self.cabecera.question_label.set_markup("<b>" + pregunta + "</b>")
         GObject.idle_add(self.__activar, pregunta)
 
     def repetir_respuesta(self, widget, event, respuesta):
@@ -163,15 +168,17 @@ class FlashCardView(Gtk.EventBox):
             self.flashcard.disconnect(self.click_event)
             self.click_event = None
         self.click_event = None
-        self.cabecera.question_label.set_markup("<b>"+respuesta+"</b>")
+        self.cabecera.question_label.set_markup("<b>" + respuesta + "</b>")
         GObject.idle_add(self.__show_phrase, respuesta)
 
     def __activar(self, pregunta):
         decir_demorado(170, 50, 0, "en", pregunta)
         if not self.click_event:
-            self.click_event = self.flashcard.connect("button-press-event", self.repetir_pregunta, pregunta)
+            self.click_event = self.flashcard.connect(
+                "button-press-event", self.repetir_pregunta, pregunta)
         self.derecha.activar()
-        self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
+        self.cabecera.question_label.modify_fg(
+            Gtk.StateFlags.NORMAL, COLORES["window"])
         self.cabecera.question_label.set_markup(pregunta)
         self.statuslabel.set_text("Flashcard %i of %i" % (
             self.index_select + 1, len(self.vocabulario)))
@@ -213,8 +220,8 @@ class FlashCardView(Gtk.EventBox):
         else:
             self.topic = topic
             dialog = Dialog("Come back tomorrow!", self.get_toplevel(),
-                ("OK", Gtk.ResponseType.ACCEPT),
-                "You've memorized all flashcards for today.")
+                            ("OK", Gtk.ResponseType.ACCEPT),
+                            "You've memorized all flashcards for today.")
             dialog.run()
             dialog.destroy()
             self.emit("video", self.topic)
@@ -267,10 +274,10 @@ class Cabecera(Gtk.EventBox):
 class Derecha(Gtk.EventBox):
 
     __gsignals__ = {
-    "siguiente": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, (GObject.TYPE_INT, )),
-    "show_answer": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, [])}
+        "siguiente": (GObject.SIGNAL_RUN_FIRST,
+                      GObject.TYPE_NONE, (GObject.TYPE_INT, )),
+        "show_answer": (GObject.SIGNAL_RUN_FIRST,
+                        GObject.TYPE_NONE, [])}
 
     def __init__(self):
 
@@ -291,24 +298,24 @@ class Derecha(Gtk.EventBox):
         self.label.set_line_wrap(True)
 
         button0 = MyButton("Show me\nthe answer",
-            Pango.FontDescription("DejaVu Sans 16"))
+                           Pango.FontDescription("DejaVu Sans 16"))
         button0.connect("clicked", self.__show_answer)
         tabla.attach(button0, 0, 3, 0, 2, ypadding=5)
 
         button1 = MyButton("I\nknew\nit !",
-            Pango.FontDescription("DejaVu Sans 10"))
+                           Pango.FontDescription("DejaVu Sans 10"))
         button1.modify_bg(Gtk.StateFlags.NORMAL, COLORES["verde"])
         button1.connect("clicked", self.__seguir)
         tabla.attach(button1, 0, 1, 2, 4)
 
         button2 = MyButton("I\nwasn't\nsure.",
-            Pango.FontDescription("DejaVu Sans 10"))
+                           Pango.FontDescription("DejaVu Sans 10"))
         button2.modify_bg(Gtk.StateFlags.NORMAL, COLORES["amarillo"])
         button2.connect("clicked", self.__seguir)
         tabla.attach(button2, 1, 2, 2, 4)
 
         button3 = MyButton("I\nhad\nno idea !",
-            Pango.FontDescription("DejaVu Sans 10"))
+                           Pango.FontDescription("DejaVu Sans 10"))
         button3.modify_bg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
         button3.connect("clicked", self.__seguir)
         tabla.attach(button3, 2, 3, 2, 4)

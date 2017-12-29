@@ -41,8 +41,10 @@ from CreditsView import CreditsView
 
 BASE_PATH = os.path.dirname(__file__)
 
+
 def ocultar(widget):
     widget.stop()
+
 
 class App(Gtk.Window):
 
@@ -52,18 +54,19 @@ class App(Gtk.Window):
 
         self.set_title("Peru Learns English")
         self.set_icon_from_file(os.path.join(
-            BASE_PATH , "Iconos", "icono.svg"))
+            BASE_PATH, "Iconos", "icono.svg"))
 
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.set_border_width(2)
 
         # FIXME: No funciona en la XO con fedora 11
-        #self.set_resizable(False)
+        # self.set_resizable(False)
 
         main = Main()
         self.add(main)
 
         GObject.idle_add(self.show)
+
 
 class Main(Gtk.EventBox):
 
@@ -123,7 +126,7 @@ class Main(Gtk.EventBox):
 
     def __game_return_to_video(self, widget, topic):
         self.__play_video(widget, topic)
-        #self.videoview.videoplayer.stop()
+        # self.videoview.videoplayer.stop()
 
     def __play_game(self, widget, topic):
         self.__switch(False, "game", topic)
@@ -135,7 +138,7 @@ class Main(Gtk.EventBox):
         self.toolbar.homebutton.set_active(False)
         self.__switch(False, "Topics", topic)
         self.videoview.set_full(False)
-        #self.videoview.videoplayer.pause()
+        # self.videoview.videoplayer.pause()
 
     def __play_instructions(self, widget):
         self.__switch(False, "Instructions")

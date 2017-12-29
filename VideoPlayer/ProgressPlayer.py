@@ -33,10 +33,10 @@ BASE_PATH = os.path.dirname(__file__)
 class ProgressPlayer(Gtk.EventBox):
 
     __gsignals__ = {
-    "seek": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_FLOAT, )),
-    "volumen": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_FLOAT,))}
+        "seek": (GObject.SIGNAL_RUN_LAST,
+                 GObject.TYPE_NONE, (GObject.TYPE_FLOAT, )),
+        "volumen": (GObject.SIGNAL_RUN_LAST,
+                    GObject.TYPE_NONE, (GObject.TYPE_FLOAT,))}
 
     def __init__(self):
 
@@ -74,8 +74,8 @@ class BarraProgreso(Gtk.EventBox):
     """
 
     __gsignals__ = {
-    "user-set-value": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_FLOAT, ))}
+        "user-set-value": (GObject.SIGNAL_RUN_LAST,
+                           GObject.TYPE_NONE, (GObject.TYPE_FLOAT, ))}
 
     def __init__(self):
 
@@ -115,8 +115,8 @@ class ProgressBar(Gtk.HScale):
     """
 
     __gsignals__ = {
-    "user-set-value": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_FLOAT, ))}
+        "user-set-value": (GObject.SIGNAL_RUN_LAST,
+                           GObject.TYPE_NONE, (GObject.TYPE_FLOAT, ))}
 
     def __init__(self, ajuste):
 
@@ -198,7 +198,7 @@ class ProgressBar(Gtk.HScale):
         yimage = yy + hh / 2 - imgh / 2
 
         self.get_window().draw_pixbuf(gc, self.pixbuf, 0, 0, ximage, yimage,
-            imgw, imgh, Gdk.RGB_DITHER_NORMAL, 0, 0)
+                                      imgw, imgh, Gdk.RGB_DITHER_NORMAL, 0, 0)
 
         return True
 
@@ -206,8 +206,8 @@ class ProgressBar(Gtk.HScale):
 class ControlVolumen(Gtk.VolumeButton):
 
     __gsignals__ = {
-    "volumen": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_FLOAT,))}
+        "volumen": (GObject.SIGNAL_RUN_LAST,
+                    GObject.TYPE_NONE, (GObject.TYPE_FLOAT,))}
 
     def __init__(self):
 

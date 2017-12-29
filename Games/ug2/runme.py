@@ -23,8 +23,11 @@ import sys
 import os
 
 game_dir = os.path.abspath(os.path.dirname(__file__))
+
+
 def gamedir(archivo):
     return os.path.join(game_dir, archivo)
+
 
 sys.path.insert(1, gamedir("../../Lib/"))
 
@@ -39,9 +42,11 @@ pygame.mixer.init()
 SIZE = (700, 700)
 TILE = (64, 64)
 
+
 def play(res):
     if not Escena.MUTE:
         res.play()
+
 
 def wrap(text, length):
     """
@@ -67,6 +72,7 @@ topic_dir = gamedir("../../Topics/Topic_6/")
 VOCABULARIO = []
 CANT_PALABRAS = 0
 
+
 def obtener_palabra(topic_dir=topic_dir):
     global VOCABULARIO, CANT_PALABRAS
 
@@ -87,14 +93,16 @@ def obtener_palabra(topic_dir=topic_dir):
 
     return palabra, palabra_png
 
+
 def reset_vocabulario():
     global VOCABULARIO, CANT_PALABRAS
     VOCABULARIO = []
     CANT_PALABRAS = 0
 
+
 def obtener_set(topic):
     conjunto = list()
-    while len(conjunto)<5:
+    while len(conjunto) < 5:
         nueva = obtener_palabra(topic)
         if nueva not in conjunto:
             conjunto.append(nueva)
@@ -112,7 +120,7 @@ class Texto(spyral.Sprite):
         self.layer = "primer"
 
         self.image = spyral.Image(filename=gamedir("images/Menu_2.png"))
-        #self.image.draw_rect(color=(128,128,128),
+        # self.image.draw_rect(color=(128,128,128),
         #        position=(0,0), size=(self.height,self.width))
 
         font_path = gamedir("../fonts/DejaVuSans.ttf")
@@ -121,7 +129,7 @@ class Texto(spyral.Sprite):
 
         nueva = self.set_text(texto)
         self.image.draw_image(nueva,
-            position=(self.margen / 2, 0), anchor="midleft")
+                              position=(self.margen / 2, 0), anchor="midleft")
 
         self.scale = 1.3
 
@@ -137,7 +145,7 @@ class Texto(spyral.Sprite):
         ln = 0
         for linea in lineas:
             bloque.draw_image(image=self.font.render(linea),
-                position=(0, ln * self.line_height), anchor="midtop")
+                              position=(0, ln * self.line_height), anchor="midtop")
             ln = ln + 1
 
         return bloque
@@ -168,26 +176,29 @@ class Tablero(spyral.View):
             for col in range(len(self.tablero[row])):
                 tablero = self.tablero[row][col]
                 if tablero:
-                    palabra = self.palabras[tablero-1][0]
-                    archivo = self.palabras[tablero-1][1]
-                    bloque = Bloque(self, row, col, COLOR=tablero-1,
+                    palabra = self.palabras[tablero - 1][0]
+                    archivo = self.palabras[tablero - 1][1]
+                    bloque = Bloque(self, row, col, COLOR=tablero - 1,
                                     PALABRA=palabra, ARCHIVO=archivo)
                     self.tablero[row][col] = bloque
                 else:
                     nexo = Nexo(self, row, col)
                     self.tablero[row][col] = nexo
 
-        spyral.event.register ("input.keyboard.down.tab", self.blinkall)
-        spyral.event.register ("input.keyboard.down.escape", self.openall)
+        spyral.event.register("input.keyboard.down.tab", self.blinkall)
+        spyral.event.register("input.keyboard.down.escape", self.openall)
 
         spyral.event.register("input.mouse.motion", self.handle_motion)
         spyral.event.register("Tablero.activar", self.activar)
         spyral.event.register("Tablero.movimiento", self.movimiento)
 
-        self.activar_snd = pygame.mixer.Sound(gamedir("sonidos/Retro_Game_Sounds_SFX_162.ogg"))
+        self.activar_snd = pygame.mixer.Sound(
+            gamedir("sonidos/Retro_Game_Sounds_SFX_162.ogg"))
         self.match_snd = pygame.mixer.Sound(gamedir("sonidos/Powerup.ogg"))
-        self.desactivar_snd = pygame.mixer.Sound(gamedir("sonidos/Randomize2.ogg"))
-        self.win_snd = pygame.mixer.Sound(gamedir("sonidos/Retro_Game_Sounds_SFX_161.ogg"))
+        self.desactivar_snd = pygame.mixer.Sound(
+            gamedir("sonidos/Randomize2.ogg"))
+        self.win_snd = pygame.mixer.Sound(
+            gamedir("sonidos/Retro_Game_Sounds_SFX_161.ogg"))
 
     def reset(self, mapa):
         self.palabras = obtener_set(self.topic)
@@ -202,7 +213,7 @@ class Tablero(spyral.View):
         bloques = []
         for fila in self.tablero:
             for item in fila:
-                if item.__class__.__name__=="Nexo":
+                if item.__class__.__name__ == "Nexo":
                     item.reset()
                     nexos.append(item)
                 else:
@@ -212,11 +223,11 @@ class Tablero(spyral.View):
             for col in range(len(mapa[row])):
                 tablero = mapa[row][col]
                 if tablero:
-                    palabra = self.palabras[tablero-1][0]
-                    archivo = self.palabras[tablero-1][1]
+                    palabra = self.palabras[tablero - 1][0]
+                    archivo = self.palabras[tablero - 1][1]
                     bloque = bloques.pop()
-                    bloque.reset( row, col, COLOR=tablero-1,
-                                    PALABRA=palabra, ARCHIVO=archivo)
+                    bloque.reset(row, col, COLOR=tablero - 1,
+                                 PALABRA=palabra, ARCHIVO=archivo)
                     bloque.iopen()
                     self.tablero[row][col] = bloque
                 else:
@@ -224,13 +235,12 @@ class Tablero(spyral.View):
                     nexo.reset(row, col)
                     self.tablero[row][col] = nexo
 
-
     def activar(self, ubicacion):
         if self.ACTIVADO:
             self.desactivar()
         self.ACTIVADO = ubicacion
         self.ACTIVADO_INICIAL = ubicacion
-        #print "Activado: "+str(ubicacion)
+        # print "Activado: "+str(ubicacion)
         play(self.activar_snd)
 
     def desactivar(self, camino=None, unless=None):
@@ -265,11 +275,11 @@ class Tablero(spyral.View):
                 elif "Nexo" in bloque.__class__.__name__:
                     if not bloque.visible:
                         nexos_rest += 1
-        if bloques_rest==0 and nexos_rest>0:
+        if bloques_rest == 0 and nexos_rest > 0:
             # Avisar al usuario que debe llenar la pantalla
-            #self.win()
+            # self.win()
             dialogo = Dialogo(self, "You must reforestate the entire board.")
-        elif bloques_rest==0 and nexos_rest==0:
+        elif bloques_rest == 0 and nexos_rest == 0:
             self.win()
 
     def win(self):
@@ -282,16 +292,15 @@ class Tablero(spyral.View):
         for fila in self.tablero:
             for bloque in fila:
                 if "Bloque" in bloque.__class__.__name__:
-                    if bloque.COLOR==primero.COLOR and bloque is not primero:
+                    if bloque.COLOR == primero.COLOR and bloque is not primero:
                         return bloque
 
-
     def movimiento(self, ubicacion):
-        #print "Movimiento: "+str(ubicacion)
+        # print "Movimiento: "+str(ubicacion)
         self.scene.tablero.cursor.ubicacion = spyral.Vec2D(ubicacion)
 
         if self.ACTIVADO:
-            if (ubicacion.distance(self.ACTIVADO))==1.0:
+            if (ubicacion.distance(self.ACTIVADO)) == 1.0:
                 ANTERIOR = self.tablero[self.ACTIVADO.y][self.ACTIVADO.x]
                 try:
                     CANDIDATO = self.tablero[ubicacion.y][ubicacion.x]
@@ -313,9 +322,9 @@ class Tablero(spyral.View):
                     if "Nexo" in ANTERIOR.__class__.__name__:
                         ANTERIOR.ir_a(ubicacion)
                     INICIAL = self.tablero[self.ACTIVADO_INICIAL.y][self.ACTIVADO_INICIAL.x]
-                    if CANDIDATO.COLOR==INICIAL.COLOR and (CANDIDATO is not INICIAL):
+                    if CANDIDATO.COLOR == INICIAL.COLOR and (CANDIDATO is not INICIAL):
                         self.match(INICIAL, CANDIDATO)
-                    elif CANDIDATO==INICIAL:
+                    elif CANDIDATO == INICIAL:
                         return
                     else:
                         self.desactivar()
@@ -324,10 +333,10 @@ class Tablero(spyral.View):
         #self.scene.tablero.cursor.pos = pos
         self.scene.tablero.cursor.visible = False
         if self.ACTIVADO:
-            from_pos = (pos - self.scene.tablero.pos) / spyral.Vec2D(140,140)
+            from_pos = (pos - self.scene.tablero.pos) / spyral.Vec2D(140, 140)
             ubicacion = spyral.Vec2D(int(from_pos.x), int(from_pos.y))
-            if ubicacion!=self.mov_anterior and ubicacion!=self.ACTIVADO:
-                self.mov_anterior=ubicacion
+            if ubicacion != self.mov_anterior and ubicacion != self.ACTIVADO:
+                self.mov_anterior = ubicacion
                 event = spyral.event.Event(ubicacion=ubicacion)
                 spyral.event.queue("Tablero.movimiento", event)
 
@@ -337,9 +346,10 @@ class Tablero(spyral.View):
     def openall(self):
         spyral.event.queue("Bloque.open")
 
-    #def update(self):
+    # def update(self):
     #    for line in self.estado:
     #        self.
+
 
 class Nexo (spyral.Sprite):
     def __init__(self, scene, row, col):
@@ -354,7 +364,7 @@ class Nexo (spyral.Sprite):
         self.gowest = spyral.Image(filename=gamedir("imagenes/go-west.png"))
         self.goeast = spyral.Image(filename=gamedir("imagenes/go-east.png"))
 
-        spyral.event.register ("Cursor.click", self.check_click)
+        spyral.event.register("Cursor.click", self.check_click)
 
         self.pos = spyral.Vec2D(col * 135, row * 135)
         self.pos = (col * 140 + 70, row * 140 + 70)
@@ -378,30 +388,30 @@ class Nexo (spyral.Sprite):
 
         name = "canopy_"
 
-        if self.vengo_de==(0,1):
+        if self.vengo_de == (0, 1):
             name += "north"
-        if self.vengo_de==(0,-1):
+        if self.vengo_de == (0, -1):
             name += "south"
-        if self.vengo_de==(-1,0):
+        if self.vengo_de == (-1, 0):
             name += "east"
-        if self.vengo_de==(1,0):
+        if self.vengo_de == (1, 0):
             name += "west"
 
         name += "_"
 
-        if direccion==(0,1):
+        if direccion == (0, 1):
             name += "north"
-        if direccion==(0,-1):
+        if direccion == (0, -1):
             name += "south"
-        if direccion==(-1,0):
+        if direccion == (-1, 0):
             name += "east"
-        if direccion==(1,0):
+        if direccion == (1, 0):
             name += "west"
 
         name += ".png"
 
         try:
-            self.image = spyral.Image(filename=gamedir("imagenes/"+name))
+            self.image = spyral.Image(filename=gamedir("imagenes/" + name))
         except pygame.error:
             pass
 
@@ -429,17 +439,19 @@ class Nexo (spyral.Sprite):
 
             #self.image.draw_rect ((255,0,0), (0,0), (self.image.width-2, self.image.height-2), 2)
 
-
     def check_click(self, pos):
         if self.collide_point(pos):
             self.scene.tablero.cursor.pos = pos
-            event = spyral.event.Event(ubicacion=spyral.Vec2D(self.COL, self.ROW))
+            event = spyral.event.Event(
+                ubicacion=spyral.Vec2D(self.COL, self.ROW))
             spyral.event.queue("Tablero.movimiento", event)
 
     def check_pos(self, pos):
-        r = spyral.Rect(self.pos.x + 20, self.pos.y + 20, self.pos.x+100, self.pos.y+100)
+        r = spyral.Rect(self.pos.x + 20, self.pos.y + 20,
+                        self.pos.x + 100, self.pos.y + 100)
         if r.collide_point(pos):
-            event = spyral.event.Event(ubicacion=spyral.Vec2D(self.ROW, self.COL))
+            event = spyral.event.Event(
+                ubicacion=spyral.Vec2D(self.ROW, self.COL))
             spyral.event.queue("Tablero.movimiento", event)
 
 
@@ -451,13 +463,14 @@ class Cursor (spyral.Sprite):
 
         self.anchor = "center"
         self.layer = "primer"
-        self.image = spyral.Image(filename=gamedir("imagenes/square-01-whole.png"))
+        self.image = spyral.Image(
+            filename=gamedir("imagenes/square-01-whole.png"))
         #self.scale = 0.5
 
-        spyral.event.register ("input.keyboard.down.left", self.left)
-        spyral.event.register ("input.keyboard.down.up", self.up)
-        spyral.event.register ("input.keyboard.down.down", self.down)
-        spyral.event.register ("input.keyboard.down.right", self.right)
+        spyral.event.register("input.keyboard.down.left", self.left)
+        spyral.event.register("input.keyboard.down.up", self.up)
+        spyral.event.register("input.keyboard.down.down", self.down)
+        spyral.event.register("input.keyboard.down.right", self.right)
 
         spyral.event.register("input.keyboard.down.keypad_2", self.down)
         spyral.event.register("input.keyboard.down.keypad_8", self.up)
@@ -469,8 +482,8 @@ class Cursor (spyral.Sprite):
         spyral.event.register("input.keyboard.down.keypad_7", self.click)
         spyral.event.register("input.keyboard.down.keypad_1", self.click)
 
-        spyral.event.register ("input.keyboard.down.space", self.click)
-        spyral.event.register ("input.keyboard.down.return", self.click)
+        spyral.event.register("input.keyboard.down.space", self.click)
+        spyral.event.register("input.keyboard.down.return", self.click)
 
         self.desplaz_anim = None
 
@@ -482,19 +495,23 @@ class Cursor (spyral.Sprite):
         spyral.event.queue("Cursor.click", event)
 
     def left(self):
-        self.ubicacion = spyral.Vec2D((self.ubicacion.x - 1) % 5 , self.ubicacion.y)
+        self.ubicacion = spyral.Vec2D(
+            (self.ubicacion.x - 1) % 5, self.ubicacion.y)
         self.update()
 
     def right(self):
-        self.ubicacion = spyral.Vec2D((self.ubicacion.x + 1) % 5, self.ubicacion.y)
+        self.ubicacion = spyral.Vec2D(
+            (self.ubicacion.x + 1) % 5, self.ubicacion.y)
         self.update()
 
     def down(self):
-        self.ubicacion = spyral.Vec2D(self.ubicacion.x, (self.ubicacion.y + 1) % 5)
+        self.ubicacion = spyral.Vec2D(
+            self.ubicacion.x, (self.ubicacion.y + 1) % 5)
         self.update()
 
     def up(self):
-        self.ubicacion = spyral.Vec2D(self.ubicacion.x, (self.ubicacion.y - 1) % 5)
+        self.ubicacion = spyral.Vec2D(
+            self.ubicacion.x, (self.ubicacion.y - 1) % 5)
         self.update()
 
     def update(self):
@@ -505,11 +522,12 @@ class Cursor (spyral.Sprite):
             self.stop_animation(self.desplaz_anim)
 
         self.desplaz_anim = spyral.Animation("pos", QuadraticOutTuple(self.pos, newpos),
-                                                duration=0.4)
+                                             duration=0.4)
         self.animate(self.desplaz_anim)
 
         event = spyral.event.Event(ubicacion=self.ubicacion)
         spyral.event.queue("Tablero.movimiento", event)
+
 
 class Bloque (spyral.Sprite):
     # RENDERED lleva la cuenta para todos los bloques,
@@ -536,9 +554,9 @@ class Bloque (spyral.Sprite):
         if Bloque.RENDERED and (PALABRA in Bloque.RENDERED):
             self.mode = "TARJETA"
         elif not Bloque.RENDERED:
-            Bloque.RENDERED = [ PALABRA ]
+            Bloque.RENDERED = [PALABRA]
         else:
-            Bloque.RENDERED.append( PALABRA )
+            Bloque.RENDERED.append(PALABRA)
 
         # Somos un ojo del espacio
         assert COLOR != -1
@@ -566,8 +584,8 @@ class Bloque (spyral.Sprite):
         spyral.event.register("Bloque.open", self.iopen)
         spyral.event.register("Bloque.final", self.final)
 
-        spyral.event.register ("input.mouse.down.left", self.check_click)
-        spyral.event.register ("Cursor.click", self.check_click)
+        spyral.event.register("input.mouse.down.left", self.check_click)
+        spyral.event.register("Cursor.click", self.check_click)
 
         self.scale = 0.9
         self.showself()
@@ -590,9 +608,9 @@ class Bloque (spyral.Sprite):
         if Bloque.RENDERED and (PALABRA in Bloque.RENDERED):
             self.mode = "TARJETA"
         elif not Bloque.RENDERED:
-            Bloque.RENDERED = [ PALABRA ]
+            Bloque.RENDERED = [PALABRA]
         else:
-            Bloque.RENDERED.append( PALABRA )
+            Bloque.RENDERED.append(PALABRA)
 
         self.PALABRA = PALABRA
         self.ARCHIVO = ARCHIVO
@@ -627,13 +645,13 @@ class Bloque (spyral.Sprite):
         ln = 0
         for linea in lineas:
             bloque.draw_image(image=self.font.render(linea),
-                position=(0, ln * self.line_height), anchor="midtop")
+                              position=(0, ln * self.line_height), anchor="midtop")
             ln = ln + 1
 
         nueva = spyral.Image(size=(self.width - self.margin,
-            self.height - self.margin)).fill((255, 255, 255))
+                                   self.height - self.margin)).fill((255, 255, 255))
         nueva.draw_image(bloque,
-            position=(0, 0), anchor="midleft")
+                         position=(0, 0), anchor="midleft")
 
         return nueva
 
@@ -643,17 +661,17 @@ class Bloque (spyral.Sprite):
                 self.width - self.margin, self.height - self.margin))
         except pygame.error:
             nueva = spyral.Image(size=(self.width - self.margin,
-                self.height - self.margin)).fill((255, 255, 255))
+                                       self.height - self.margin)).fill((255, 255, 255))
         return nueva
 
     def showself(self):
         self.image = self.marco
         if self.mode == "TARJETA":
             self.image.draw_image(self.render_image(self.ARCHIVO),
-                position=(0, 0), anchor="center")
+                                  position=(0, 0), anchor="center")
         elif self.mode == "PALABRA":
             self.image.draw_image(self.render_text(self.PALABRA),
-                position=(0, 0), anchor="center")
+                                  position=(0, 0), anchor="center")
 
     def init_animations(self):
         # ABRIR
@@ -665,12 +683,14 @@ class Bloque (spyral.Sprite):
         retro_secuencia = list(reversed(secuencia))
         toda_secuencia = secuencia + retro_secuencia
 
-        self.open_animation = spyral.Animation("image", spyral.easing.Iterate(secuencia, times=0.9), 1)
-        self.close_animation = spyral.Animation("image", spyral.easing.Iterate(retro_secuencia, times=0.9), 1)
-        self.blink_animation = spyral.Animation("image", spyral.easing.Iterate(toda_secuencia), 2)
+        self.open_animation = spyral.Animation(
+            "image", spyral.easing.Iterate(secuencia, times=0.9), 1)
+        self.close_animation = spyral.Animation(
+            "image", spyral.easing.Iterate(retro_secuencia, times=0.9), 1)
+        self.blink_animation = spyral.Animation(
+            "image", spyral.easing.Iterate(toda_secuencia), 2)
 
         spyral.event.register("Bloque.image.animation.end", self.update)
-
 
     def lado_mas_cercano(self):
         x = self.x
@@ -680,7 +700,7 @@ class Bloque (spyral.Sprite):
         arr = spyral.Vec2D(x, 0 - self.height)
         aba = spyral.Vec2D(x, self.scene.height + self.height)
 
-        punto = spyral.Vec2D(x,y)
+        punto = spyral.Vec2D(x, y)
 
         mayor = self.scene.width
         for borde in [izq, der, aba, arr]:
@@ -693,7 +713,7 @@ class Bloque (spyral.Sprite):
 
     def tiled(self, x, COLOR=None):
         BIGTILE = (120, 120)
-        if COLOR==None:
+        if COLOR == None:
             COLOR = self.BGCOLOR
         return self.full_image.copy().crop((x * 132, COLOR * 132), BIGTILE)
 
@@ -705,7 +725,8 @@ class Bloque (spyral.Sprite):
                 else:
                     self.iopen()
                     self.scene.tablero.desactivar()
-                event = spyral.event.Event(ubicacion=spyral.Vec2D(self.COL, self.ROW))
+                event = spyral.event.Event(
+                    ubicacion=spyral.Vec2D(self.COL, self.ROW))
                 spyral.event.queue("Tablero.movimiento", event)
             else:
                 self.scene.tablero.desactivar(self.MATCH, unless=self)
@@ -721,21 +742,21 @@ class Bloque (spyral.Sprite):
 
     def final(self):
         self.abierto = True
-        #self.blink()
+        # self.blink()
 
         # ESCAPAR
         #self.escape_animation = spyral.Animation("pos", QuadraticOutTuple(self.pos, self.lado_mas_cercano()), 3)
-        #try:
+        # try:
         #    self.animate (self.escape_animation)
-        #except:
+        # except:
         #    pass
 
     def iopen(self, unless=None):
-        if (not unless==self) and (not self.MATCH):
+        if (not unless == self) and (not self.MATCH):
             self.oculto = False
             if not self.abierto:
                 try:
-                    self.animate (self.open_animation)
+                    self.animate(self.open_animation)
                     self.abierto = True
                 except:
                     pass
@@ -749,14 +770,14 @@ class Bloque (spyral.Sprite):
         self.oculto = True
         if self.abierto:
             try:
-                self.animate (self.close_animation)
+                self.animate(self.close_animation)
                 self.abierto = False
             except:
                 pass
 
     def blink(self):
         try:
-            self.animate (self.blink_animation)
+            self.animate(self.blink_animation)
         except:
             pass
 
@@ -788,7 +809,8 @@ class Escena(spyral.Scene):
 
         #self.tablero = Tablero(self, topic, mapa=self.mapas[Escena.n])
         self.titulo = Title(self)
-        self.intro = Dialogo(self, "Devastated by ignorance, ancient forests have turned into deserts...", self.intro2)
+        self.intro = Dialogo(
+            self, "Devastated by ignorance, ancient forests have turned into deserts...", self.intro2)
 
         spyral.event.register("system.quit", spyral.director.pop, scene=self)
         spyral.event.register("Tablero.score", self.score)
@@ -804,85 +826,85 @@ class Escena(spyral.Scene):
         self.mapas = []
         self.mapas.append(
             [[1, 0, 0, 0, 2],
-            [3, 0, 0, 4, 0],
-            [0, 1, 2, 5, 0],
-            [0, 0, 3, 0, 0],
-            [5, 0, 0, 0, 4]]
-            )
+             [3, 0, 0, 4, 0],
+             [0, 1, 2, 5, 0],
+             [0, 0, 3, 0, 0],
+             [5, 0, 0, 0, 4]]
+        )
         self.mapas.append(
             [[0, 0, 0, 1, 2],
-            [0, 1, 3, 0, 0],
-            [0, 0 ,0, 0, 0],
-            [3, 4, 0, 0, 2],
-            [5, 0, 5, 0, 4]]
-            )
+             [0, 1, 3, 0, 0],
+             [0, 0, 0, 0, 0],
+             [3, 4, 0, 0, 2],
+             [5, 0, 5, 0, 4]]
+        )
         self.mapas.append(
             [[0, 0, 0, 0, 1],
-            [2, 3, 0, 2, 0],
-            [0, 4, 0, 0, 0],
-            [0, 3, 0, 1, 5],
-            [0, 4, 5, 0, 0]]
-            )
+             [2, 3, 0, 2, 0],
+             [0, 4, 0, 0, 0],
+             [0, 3, 0, 1, 5],
+             [0, 4, 5, 0, 0]]
+        )
         self.mapas.append(
             [[1, 2, 3, 0, 3],
-            [0, 0, 2, 4, 0],
-            [0, 5, 0, 0, 0],
-            [0, 0, 1, 0, 0],
-            [5, 0, 0, 0, 4]]
-            )
+             [0, 0, 2, 4, 0],
+             [0, 5, 0, 0, 0],
+             [0, 0, 1, 0, 0],
+             [5, 0, 0, 0, 4]]
+        )
         self.mapas.append(
             [[0, 0, 1, 2, 0],
-            [0, 0, 3, 4, 0],
-            [0, 0, 5, 0, 0],
-            [1, 0, 0, 4, 0],
-            [3, 0, 0, 5, 2]]
-            )
+             [0, 0, 3, 4, 0],
+             [0, 0, 5, 0, 0],
+             [1, 0, 0, 4, 0],
+             [3, 0, 0, 5, 2]]
+        )
         self.mapas.append(
             [[1, 0, 0, 0, 2],
-            [0, 3, 2, 1, 0],
-            [0, 4, 0, 0, 0],
-            [0, 0, 5, 0, 0],
-            [3, 0, 0, 4, 5]]
-            )
+             [0, 3, 2, 1, 0],
+             [0, 4, 0, 0, 0],
+             [0, 0, 5, 0, 0],
+             [3, 0, 0, 4, 5]]
+        )
         self.mapas.append([
             [1, 0, 2, 0, 0],
             [3, 0, 0, 1, 0],
             [0, 4, 2, 0, 0],
             [0, 0, 0, 0, 4],
             [0, 3, 5, 0, 5]]
-            )
+        )
         self.mapas.append([
             [0, 0, 0, 0, 1],
             [0, 2, 3, 4, 0],
             [4, 0, 0, 1, 0],
             [2, 0, 0, 3, 5],
             [5, 0, 0, 0, 0]]
-            )
+        )
         self.mapas.append([
             [0, 0, 0, 1, 2],
             [0, 3, 0, 0, 0],
             [0, 0, 0, 4, 5],
             [1, 3, 2, 0, 0],
             [4, 0, 0, 0, 5]]
-            )
+        )
         self.mapas.append([
             [1, 0, 0, 0, 0],
             [2, 3, 0, 3, 1],
             [0, 4, 0, 0, 0],
             [0, 0, 0, 2, 4],
             [5, 0, 0, 0, 5]]
-            )
-            
+        )
 
     def intro2(self):
-        self.intro = Dialogo(self, "Your mission is to match each pair of eyes in order to regenerate the water cycle.", self.start_now)
+        self.intro = Dialogo(
+            self, "Your mission is to match each pair of eyes in order to regenerate the water cycle.", self.start_now)
         self.titulo.kill()
 
     def start_now(self):
         self.tablero = Tablero(self, self.topic, mapa=self.mapas[Escena.n])
 
     def mute(self, value):
-        if value==True:
+        if value == True:
             pygame.mixer.music.pause()
         else:
             pygame.mixer.music.play()
@@ -893,14 +915,15 @@ class Escena(spyral.Scene):
         self.background = spyral.Image(filename=gamedir(
             "imagenes/Forest_Los_Tilos.jpg")).scale(self.scene.size)
 
-        win = Dialogo(self, "Congratulations! You've saved the forests!", self.win)
+        win = Dialogo(
+            self, "Congratulations! You've saved the forests!", self.win)
 
     def score(self):
-        if self.tablero.intentos==5:
+        if self.tablero.intentos == 5:
             puntos = 1000
-        elif 5<self.tablero.intentos<10:
+        elif 5 < self.tablero.intentos < 10:
             puntos = 500
-        elif self.tablero.intentos>10:
+        elif self.tablero.intentos > 10:
             puntos = 100
         self.puntos += puntos
 
@@ -929,7 +952,7 @@ class Dialogo(spyral.Sprite):
         self.layer = "primer"
 
         self.image = spyral.Image(filename=gamedir("imagenes/Menu_2.png"))
-        #self.image.draw_rect(color=(128,128,128),
+        # self.image.draw_rect(color=(128,128,128),
         #        position=(0,0), size=(self.height,self.width))
 
         font_path = gamedir("../fonts/DejaVuSans.ttf")
@@ -938,7 +961,7 @@ class Dialogo(spyral.Sprite):
 
         nueva = self.set_text(texto)
         self.image.draw_image(nueva,
-            position=(self.margen / 2, 0), anchor="midleft")
+                              position=(self.margen / 2, 0), anchor="midleft")
 
         spyral.event.register("input.mouse.down.left", self.go_callback)
         spyral.event.register("input.keyboard.down.return", self.go_callback)
@@ -964,7 +987,7 @@ class Dialogo(spyral.Sprite):
         ln = 0
         for linea in lineas:
             bloque.draw_image(image=self.font.render(linea),
-                position=(0, ln * self.line_height), anchor="midtop")
+                              position=(0, ln * self.line_height), anchor="midtop")
             ln = ln + 1
 
         self.scale = 2
@@ -989,11 +1012,13 @@ def QuadraticOutTuple(start=(0, 0), finish=(0, 0)):
     """
     def quadratic_easing(sprite, delta):
         return (start[0] + (finish[0] - start[0]) * (2 * delta - delta * delta),
-                start[1] + (finish[1] - start[1]) * (2* delta - delta * delta))
+                start[1] + (finish[1] - start[1]) * (2 * delta - delta * delta))
     return quadratic_easing
+
 
 def main():
     spyral.director.push(Escena())
+
 
 if __name__ == "__main__":
     spyral.director.init(SIZE, fullscreen=False)

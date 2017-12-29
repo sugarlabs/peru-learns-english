@@ -7,7 +7,7 @@ import markdown as md
 template = """
 <html>
 <head>
-<meta charset="utf-8"> 
+<meta charset="utf-8">
 <style>
 body {
     text-align: center;
@@ -25,6 +25,6 @@ body {
 plantilla = Template(template)
 
 creditos = md.markdown(open("CREDITS.md").read())
-#creditos.decode("utf-8")
+# creditos.decode("utf-8")
 
 open("Docs/CREDITS.html", "w").write(plantilla.render(credits=creditos))

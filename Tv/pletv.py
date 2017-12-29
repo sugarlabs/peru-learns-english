@@ -43,8 +43,9 @@ from CreditsView import CreditsView
 BASE_PATH = parent_dir
 
 OLD_GTK = False
-if gtk.pygtk_version[0]==2 and gtk.pygtk_version[1]<15:
+if gtk.pygtk_version[0] == 2 and gtk.pygtk_version[1] < 15:
     OLD_GTK = True
+
 
 def ocultar(widget):
     widget.stop()
@@ -58,13 +59,13 @@ class Main(gtk.Window):
 
         self.set_title("Peru Learns English")
         self.set_icon_from_file(os.path.join(
-            BASE_PATH , "Iconos", "icono.svg"))
+            BASE_PATH, "Iconos", "icono.svg"))
 
         self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
         self.set_border_width(2)
 
         # FIXME: No funciona en la XO con fedora 11
-        #self.set_resizable(False)
+        # self.set_resizable(False)
 
         if OLD_GTK:
             # Esto es un hack para que gtk viejo en la XO no se maree

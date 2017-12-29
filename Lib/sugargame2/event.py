@@ -5,9 +5,11 @@ from gi.repository import Gtk, Gdk, GObject
 import pygame
 import pygame.event
 
+
 class _MockEvent(object):
     def __init__(self, keyval):
         self.keyval = keyval
+
 
 class Translator(object):
     key_trans = {
@@ -19,32 +21,32 @@ class Translator(object):
         'Shift_R': pygame.K_RSHIFT,
         'Super_L': pygame.K_LSUPER,
         'Super_R': pygame.K_RSUPER,
-        'KP_Page_Up' : pygame.K_KP9,
-        'KP_Page_Down' : pygame.K_KP3,
-        'KP_End' : pygame.K_KP1,
-        'KP_Home' : pygame.K_KP7,
-        'KP_Up' : pygame.K_KP8,
-        'KP_Down' : pygame.K_KP2,
-        'KP_Left' : pygame.K_KP4,
-        'KP_Right' : pygame.K_KP6,
-        'numbersign' : pygame.K_HASH,
-        'percent' : ord('%'),
-        'exclam' : pygame.K_EXCLAIM,
-	'asciicircum' : pygame.K_CARET,
-        'parenleft' : pygame.K_LEFTPAREN,
-        'parenright' : pygame.K_RIGHTPAREN,
-        'braceleft' : ord('{'),
-        'braceright' : ord('}'),
-        'bracketleft' : pygame.K_LEFTBRACKET,
-        'bracketright' : pygame.K_RIGHTBRACKET,
-        'apostrophe' : ord('\''),
-        'equal' : pygame.K_EQUALS,
-        'grave' : pygame.K_BACKQUOTE,
-        'Caps_Lock' : pygame.K_CAPSLOCK,
-        'Page_Up' : pygame.K_PAGEUP,
-        'Page_Down' : pygame.K_PAGEDOWN,
-        'Num_Lock' : pygame.K_NUMLOCK,
-        'Bar' : ord('|')
+        'KP_Page_Up': pygame.K_KP9,
+        'KP_Page_Down': pygame.K_KP3,
+        'KP_End': pygame.K_KP1,
+        'KP_Home': pygame.K_KP7,
+        'KP_Up': pygame.K_KP8,
+        'KP_Down': pygame.K_KP2,
+        'KP_Left': pygame.K_KP4,
+        'KP_Right': pygame.K_KP6,
+        'numbersign': pygame.K_HASH,
+        'percent': ord('%'),
+        'exclam': pygame.K_EXCLAIM,
+        'asciicircum': pygame.K_CARET,
+        'parenleft': pygame.K_LEFTPAREN,
+        'parenright': pygame.K_RIGHTPAREN,
+        'braceleft': ord('{'),
+        'braceright': ord('}'),
+        'bracketleft': pygame.K_LEFTBRACKET,
+        'bracketright': pygame.K_RIGHTBRACKET,
+        'apostrophe': ord('\''),
+        'equal': pygame.K_EQUALS,
+        'grave': pygame.K_BACKQUOTE,
+        'Caps_Lock': pygame.K_CAPSLOCK,
+        'Page_Up': pygame.K_PAGEUP,
+        'Page_Down': pygame.K_PAGEDOWN,
+        'Num_Lock': pygame.K_NUMLOCK,
+        'Bar': ord('|')
     }
 
     mod_map = {
@@ -64,16 +66,16 @@ class Translator(object):
         # Enable events
         # (add instead of set here because the main window is already realized)
         self._mainwindow.add_events(
-            Gdk.EventMask.KEY_PRESS_MASK | \
-            Gdk.EventMask.KEY_RELEASE_MASK | \
+            Gdk.EventMask.KEY_PRESS_MASK |
+            Gdk.EventMask.KEY_RELEASE_MASK |
             Gdk.EventMask.VISIBILITY_NOTIFY_MASK
         )
 
         self._inner_evb.set_events(
-            Gdk.EventMask.POINTER_MOTION_MASK | \
-            Gdk.EventMask.POINTER_MOTION_HINT_MASK | \
-            Gdk.EventMask.BUTTON_MOTION_MASK | \
-            Gdk.EventMask.BUTTON_PRESS_MASK | \
+            Gdk.EventMask.POINTER_MOTION_MASK |
+            Gdk.EventMask.POINTER_MOTION_HINT_MASK |
+            Gdk.EventMask.BUTTON_MOTION_MASK |
+            Gdk.EventMask.BUTTON_PRESS_MASK |
             Gdk.EventMask.BUTTON_RELEASE_MASK
         )
 
@@ -95,8 +97,8 @@ class Translator(object):
         # Internal data
         self.__stopped = False
         self.__keystate = [0] * 323
-        self.__button_state = [0,0,0]
-        self.__mouse_pos = (0,0)
+        self.__button_state = [0, 0, 0]
+        self.__mouse_pos = (0, 0)
         self.__repeat = (None, None)
         self.__held = set()
         self.__held_time_left = {}
@@ -122,9 +124,9 @@ class Translator(object):
 
     def _resize_cb(self, widget, event):
         evt = pygame.event.Event(pygame.VIDEORESIZE,
-                                 size=(event.width,event.height), width=event.width, height=event.height)
+                                 size=(event.width, event.height), width=event.width, height=event.height)
         pygame.event.post(evt)
-        return False # continue processing
+        return False  # continue processing
 
     def _screen_changed_cb(self, widget, event):
         if pygame.display.get_init():
@@ -174,10 +176,10 @@ class Translator(object):
         keycode = None
         if key in self.key_trans:
             keycode = self.key_trans[key]
-        elif hasattr(pygame, 'K_'+key.upper()):
-            keycode = getattr(pygame, 'K_'+key.upper())
-        elif hasattr(pygame, 'K_'+key.lower()):
-            keycode = getattr(pygame, 'K_'+key.lower())
+        elif hasattr(pygame, 'K_' + key.upper()):
+            keycode = getattr(pygame, 'K_' + key.upper())
+        elif hasattr(pygame, 'K_' + key.lower()):
+            keycode = getattr(pygame, 'K_' + key.lower())
         elif key == 'XF86Start':
             # view source request, specially handled...
             self._mainwindow.view_source()
@@ -205,16 +207,17 @@ class Translator(object):
         return self.__button_state
 
     def _mousedown_cb(self, widget, event):
-        self.__button_state[event.button-1] = 1
+        self.__button_state[event.button - 1] = 1
         widget.grab_focus()
         return self._mouseevent(widget, event, pygame.MOUSEBUTTONDOWN)
 
     def _mouseup_cb(self, widget, event):
-        self.__button_state[event.button-1] = 0
+        self.__button_state[event.button - 1] = 0
         return self._mouseevent(widget, event, pygame.MOUSEBUTTONUP)
 
     def _mouseevent(self, widget, event, type):
-        evt = pygame.event.Event(type, button=event.button, pos=(event.x, event.y))
+        evt = pygame.event.Event(
+            type, button=event.button, pos=(event.x, event.y))
         self._post(evt)
         return True
 
@@ -252,7 +255,8 @@ class Translator(object):
             self.__held_time_left[key] -= delta
             if self.__held_time_left[key] <= 0:
                 self.__held_time_left[key] = self.__repeat[1]
-                self._keyevent(None, _MockEvent(self.__held_last_value[key]), pygame.KEYDOWN)
+                self._keyevent(None, _MockEvent(
+                    self.__held_last_value[key]), pygame.KEYDOWN)
 
         return True
 

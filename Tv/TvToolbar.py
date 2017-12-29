@@ -37,13 +37,14 @@ sys.path.insert(1, parent_dir)
 
 BASE_PATH = parent_dir
 
+
 class Toolbar(gtk.EventBox):
 
     __gsignals__ = {
-    "activar": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, )),
-    "videocat": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
+        "activar": (gobject.SIGNAL_RUN_FIRST,
+                    gobject.TYPE_NONE, (gobject.TYPE_STRING, )),
+        "videocat": (gobject.SIGNAL_RUN_FIRST,
+                     gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
 
     def __init__(self):
 
@@ -89,7 +90,8 @@ class Toolbar(gtk.EventBox):
         self.menu = Menu(self)
 
         self.menubutton = PopupMenuButton("Level")
-        self.menubutton.child.modify_font(pango.FontDescription("DejaVu Sans Bold 16"))
+        self.menubutton.child.modify_font(
+            pango.FontDescription("DejaVu Sans Bold 16"))
         self.menubutton.child.modify_fg(gtk.STATE_NORMAL, COLORES["text"])
         self.menubutton.child.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
         self.menubutton.set_menu(self.menu)
@@ -110,7 +112,7 @@ class Toolbar(gtk.EventBox):
         activo = not widget.get_active()
         if activo:
             self.instructionsbutton.set_active(False)
-            #self.playlistbutton.set_active(False)
+            # self.playlistbutton.set_active(False)
             self.emit("activar", "Playlist")
         else:
             self.homebutton.set_active(False)
@@ -119,8 +121,8 @@ class Toolbar(gtk.EventBox):
         activo = not widget.get_active()
         if activo:
             self.emit("activar", "Instructions")
-            #self.homebutton.set_active(False)
-            #self.playlistbutton.set_active(False)
+            # self.homebutton.set_active(False)
+            # self.playlistbutton.set_active(False)
         else:
             self.instructionsbutton.set_active(False)
 
@@ -128,8 +130,8 @@ class Toolbar(gtk.EventBox):
 class Menu(gtk.Menu):
 
     __gsignals__ = {
-    "activar": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
+        "activar": (gobject.SIGNAL_RUN_FIRST,
+                    gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
 
     def __init__(self, toolbar):
         gtk.Menu.__init__(self)
@@ -152,13 +154,13 @@ class Menu(gtk.Menu):
             item = gtk.MenuItem()
             boton = gtk.Button(directorio)
             boton.get_child().modify_font(pango.FontDescription("DejaVu Sans Bold 16"))
-            #boton.set_relief(gtk.RELIEF_NONE)
+            # boton.set_relief(gtk.RELIEF_NONE)
             uppername = directorio.upper()
-            if uppername=="BEGINNER":
+            if uppername == "BEGINNER":
                 boton.modify_bg(gtk.STATE_NORMAL, COLORES["verde"])
-            elif uppername=="INTERMEDIATE":
+            elif uppername == "INTERMEDIATE":
                 boton.modify_bg(gtk.STATE_NORMAL, COLORES["amarillo"])
-            elif uppername=="ADVANCED":
+            elif uppername == "ADVANCED":
                 boton.modify_bg(gtk.STATE_NORMAL, COLORES["rojo"])
             boton.get_child().modify_fg(gtk.STATE_NORMAL, COLORES["window"])
             boton.get_child().set_padding(xpad=5, ypad=20)

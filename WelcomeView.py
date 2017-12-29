@@ -29,12 +29,12 @@ from Globales import COLORES, is_xo
 class WelcomeView(Gtk.EventBox):
 
     __gsignals__ = {
-    "instructions": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, ( )),
-    "credits": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, ( )),
-    "start": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, ( ))}
+        "instructions": (GObject.SIGNAL_RUN_FIRST,
+                         GObject.TYPE_NONE, ()),
+        "credits": (GObject.SIGNAL_RUN_FIRST,
+                    GObject.TYPE_NONE, ()),
+        "start": (GObject.SIGNAL_RUN_FIRST,
+                  GObject.TYPE_NONE, ())}
 
     def __init__(self):
 
@@ -42,7 +42,6 @@ class WelcomeView(Gtk.EventBox):
 
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
         self.set_border_width(4)
-
 
         self.image = Gtk.Image()
         self.image.set_from_file("Imagenes/ple.png")
@@ -121,7 +120,7 @@ class WelcomeView(Gtk.EventBox):
         offset = 220 if not is_xo() else 340
         desired_height = screen.get_height() - offset
         desired_width = pixbuf.get_height() / desired_height * pixbuf.get_width()
-        pixbuf = pixbuf.scale_simple(desired_width , desired_height, 2)
+        pixbuf = pixbuf.scale_simple(desired_width, desired_height, 2)
         self.image.set_from_pixbuf(pixbuf)
 
     def run(self):

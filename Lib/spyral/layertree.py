@@ -18,6 +18,7 @@ Important concepts:
 
 from weakref import ref as _wref
 
+
 class _LayerTree(object):
     """
     Starts keeping track of the entity as a child of this view.
@@ -29,12 +30,13 @@ class _LayerTree(object):
     #: calculations will be messed up. It is an artificially chosen number, it
     #: should eventually be possible to change it.
     MAX_LAYERS = 40
+
     def __init__(self, scene):
-        self.layers = {_wref(scene) : []}
-        self.child_views = {_wref(scene) : []}
-        self.layer_location = {_wref(scene) : [0]}
+        self.layers = {_wref(scene): []}
+        self.child_views = {_wref(scene): []}
+        self.layer_location = {_wref(scene): [0]}
         self.scene = _wref(scene)
-        self.tree_height = {_wref(scene) : 1}
+        self.tree_height = {_wref(scene): 1}
         self._precompute_positions()
         self.maximum_height = 1
 
@@ -142,7 +144,7 @@ class _LayerTree(object):
         position = 0
         for position, layer in enumerate(self.layers[view], 1):
             self.layer_location[(view, layer)] = current_position + [position]
-        self.layer_location[view] = current_position + [1+position]
+        self.layer_location[view] = current_position + [1 + position]
         for subview in self.child_views[view]:
             if subview().layer is None:
                 new_position = self.layer_location[view]

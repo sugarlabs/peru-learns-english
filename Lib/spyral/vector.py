@@ -4,6 +4,7 @@ methods."""
 from __future__ import division
 import math
 
+
 class Vec2D(object):
     """
     Vec2D is a class that behaves like a 2-tuple, but with a number
@@ -196,8 +197,8 @@ class Vec2D(object):
         :type other: 2-tuple or :class:`Vec2D <spyral.Vec2D>`
         :rtype: float
         """
-        x = self.x*other[1] - self.y*other[0]
-        d = self.x*other[0] + self.y*other[1]
+        x = self.x * other[1] - self.y * other[0]
+        d = self.x * other[0] + self.y * other[1]
         return math.atan2(x, d)
 
     def projection(self, other):
@@ -211,9 +212,9 @@ class Vec2D(object):
         :rtype: float
         """
         other = Vec2D(other)
-        l2 = float(other.x*other.x + other.y*other.y)
-        d = self.x*other.x + self.y*other.y
-        return (d/l2)*other
+        l2 = float(other.x * other.x + other.y * other.y)
+        d = self.x * other.x + self.y * other.y
+        return (d / l2) * other
 
     def rotated(self, angle, center=(0, 0)):
         """
@@ -229,8 +230,8 @@ class Vec2D(object):
         p = self - center
         c = math.cos(angle)
         s = math.sin(angle)
-        x = p.x*c - p.y*s
-        y = p.x*s + p.y*c
+        x = p.x * c - p.y * s
+        y = p.x * s + p.y * c
         return Vec2D(x, y) + center
 
     def normalized(self):
@@ -243,7 +244,7 @@ class Vec2D(object):
         l = self.get_length()
         if self.get_length() == 0:
             return None
-        return Vec2D(self.x/l, self.y/l)
+        return Vec2D(self.x / l, self.y / l)
 
     def floor(self):
         """
@@ -274,7 +275,7 @@ class Vec2D(object):
         :rtype: :class:`Vec2D <spyral.Vec2D>`
         """
         v = Vec2D(*args)
-        return Vec2D(v.x*math.cos(v.y), v.x*math.sin(v.y))
+        return Vec2D(v.x * math.cos(v.y), v.x * math.sin(v.y))
 
     def __hash__(self):
         return self.x + self.y

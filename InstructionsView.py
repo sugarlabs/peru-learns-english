@@ -37,7 +37,7 @@ class HelpSlideShow(Gtk.EventBox):
         Gtk.EventBox.__init__(self)
 
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
-        #self.set_border_width(20)
+        # self.set_border_width(20)
 
         self.slides = []
         self.index_select = 0
@@ -105,8 +105,8 @@ class HelpSlideShow(Gtk.EventBox):
         self.label.set_text("Slide %i of %i" % (
             self.index_select % len(self.slides) + 1, len(self.slides)))
 
-        #self.left.hide()
-        #self.right.hide()
+        # self.left.hide()
+        # self.right.hide()
         return True
 
     def toggle(self):
@@ -141,17 +141,17 @@ class HelpSlideShow(Gtk.EventBox):
         self.slides = sorted(glob("Imagenes/slides/slide*.png"))
         self.index_select = -1
         self.__run_secuencia()
-        #self.play()
+        # self.play()
         return False
 
 
 class InstructionsView(Gtk.EventBox):
 
     __gsignals__ = {
-    "credits": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, ( )),
-    "start": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, ( ))}
+        "credits": (GObject.SIGNAL_RUN_FIRST,
+                    GObject.TYPE_NONE, ()),
+        "start": (GObject.SIGNAL_RUN_FIRST,
+                  GObject.TYPE_NONE, ())}
 
     def __init__(self):
 
@@ -187,7 +187,7 @@ class InstructionsView(Gtk.EventBox):
         screen = self.get_window().get_screen()
         desired_height = screen.get_height() - 180
         desired_width = pixbuf.get_height() / desired_height * pixbuf.get_width()
-        pixbuf = pixbuf.scale_simple(desired_width , desired_height, 2)
+        pixbuf = pixbuf.scale_simple(desired_width, desired_height, 2)
         self.image.set_from_pixbuf(pixbuf)
 
     def run(self):

@@ -20,7 +20,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import gi
-gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 from gi.repository import GObject, Gst
 
@@ -37,17 +36,17 @@ GObject.threads_init()
 class JAMediaReproductor(GObject.GObject):
 
     __gsignals__ = {
-    "endfile": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, []),
-    "estado": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_STRING,)),
-    "newposicion": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_INT,)),
-    "video": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_BOOLEAN,)),
-    "loading-buffer": (GObject.SIGNAL_RUN_LAST,
-        GObject.TYPE_NONE, (GObject.TYPE_INT, )),
-        }
+        "endfile": (GObject.SIGNAL_RUN_LAST,
+                    GObject.TYPE_NONE, []),
+        "estado": (GObject.SIGNAL_RUN_LAST,
+                   GObject.TYPE_NONE, (GObject.TYPE_STRING,)),
+        "newposicion": (GObject.SIGNAL_RUN_LAST,
+                        GObject.TYPE_NONE, (GObject.TYPE_INT,)),
+        "video": (GObject.SIGNAL_RUN_LAST,
+                  GObject.TYPE_NONE, (GObject.TYPE_BOOLEAN,)),
+        "loading-buffer": (GObject.SIGNAL_RUN_LAST,
+                           GObject.TYPE_NONE, (GObject.TYPE_INT, )),
+    }
 
     # Estados: playing, paused, None
 
@@ -163,7 +162,7 @@ class JAMediaReproductor(GObject.GObject):
 
     def pause_play(self):
         if self.estado == gst.STATE_PAUSED or self.estado == gst.STATE_NULL \
-            or self.estado == gst.STATE_READY:
+                or self.estado == gst.STATE_READY:
             self.play()
         elif self.estado == gst.STATE_PLAYING:
             self.pause()
@@ -185,7 +184,7 @@ class JAMediaReproductor(GObject.GObject):
             self.player.set_property("uri", direccion)
             # FIXME: Quitado por consideraciones de rendimiento en la XO
             #suburi = os.path.join(os.path.dirname(uri), "subtitulos.srt")
-            #if os.path.exists(suburi):
+            # if os.path.exists(suburi):
             #    self.player.set_property("suburi", "file://" + suburi)
             #    self.player.set_property("subtitle-font-desc", "sans bold 18")
             self.progressbar = True

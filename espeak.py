@@ -15,7 +15,6 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import gi
-gi.require_version('Gtk', '3.0')
 from gi.repository import GObject
 
 import subprocess
@@ -61,13 +60,13 @@ class BaseAudioGrab(GObject.GObject):
         # and sends it to both the real audio output
         # and a fake one that we use to draw from
         self.pipeline = gst.parse_launch(
-                cmd + ' ' \
-                '! decodebin ' \
-                '! tee name=tee ' \
-                'tee.! audioconvert ' \
-                    '! alsasink ' \
-                'tee.! queue ' \
-                    '! audioconvert ! fakesink name=sink')
+            cmd + ' '
+            '! decodebin '
+            '! tee name=tee '
+            'tee.! audioconvert '
+            '! alsasink '
+            'tee.! queue '
+            '! audioconvert ! fakesink name=sink')
 
         def on_buffer(element, buffer, pad):
             # we got a new buffer of data, ask for another
@@ -91,7 +90,7 @@ class BaseAudioGrab(GObject.GObject):
                 self._was_message = False
                 GObject.timeout_add(500, self._new_buffer, str(buffer))
 
-            elif  message.type in (gst.MESSAGE_EOS, gst.MESSAGE_ERROR):
+            elif message.type in (gst.MESSAGE_EOS, gst.MESSAGE_ERROR):
                 logger.debug(message.type)
                 self.stop_sound_device()
 
@@ -105,6 +104,7 @@ class BaseAudioGrab(GObject.GObject):
             # pass captured audio to anyone who is interested
             self.emit("new-buffer", buf)
         return False
+
 
 # load proper espeak plugin
 try:

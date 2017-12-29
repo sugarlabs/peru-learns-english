@@ -8,6 +8,7 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 5:
         Custom class meant to implement Python 2.6+ property functionality into
         Python 2.5.
         """
+
         def __init__(self, fget, *args, **kwargs):
             self.__doc__ = fget.__doc__
             super(property, self).__init__(fget, *args, **kwargs)

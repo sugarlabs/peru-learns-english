@@ -43,13 +43,14 @@ sys.path.insert(1, parent_dir)
 
 BASE_PATH = parent_dir
 
+
 class VideoView(gtk.EventBox):
 
     __gsignals__ = {
-    "flashcards": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, )),
-    "game": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
+        "flashcards": (gobject.SIGNAL_RUN_FIRST,
+                       gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, )),
+        "game": (gobject.SIGNAL_RUN_FIRST,
+                 gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
 
     def __init__(self, top=None):
 
@@ -76,10 +77,12 @@ class VideoView(gtk.EventBox):
         self.tabla.attach(self.videoplayer, 0, 3, 1, 6)
         self.videoplayer.connect("full", self.set_full)
 
-        self.scrolled_window = gtk.ScrolledWindow(hadjustment=None, vadjustment=None)
+        self.scrolled_window = gtk.ScrolledWindow(
+            hadjustment=None, vadjustment=None)
         self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS)
         self.scrolled_window.add_with_viewport(self.create_list())
-        self.scrolled_window.get_child().modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        self.scrolled_window.get_child().modify_bg(
+            gtk.STATE_NORMAL, COLORES["toolbar"])
         self.scrolled_window.get_child().set_shadow_type(gtk.SHADOW_NONE)
 
         self.tabla.attach(self.scrolled_window, 3, 5, 0, 6)
@@ -89,13 +92,15 @@ class VideoView(gtk.EventBox):
     def filtercat(self, widget, categoria):
         self.scrolled_window.get_child().destroy()
         self.scrolled_window.add_with_viewport(self.create_list(categoria))
-        self.scrolled_window.get_child().modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        self.scrolled_window.get_child().modify_bg(
+            gtk.STATE_NORMAL, COLORES["toolbar"])
         self.scrolled_window.show_all()
 
     def reset(self):
         self.scrolled_window.get_child().destroy()
         self.scrolled_window.add_with_viewport(self.create_list())
-        self.scrolled_window.get_child().modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        self.scrolled_window.get_child().modify_bg(
+            gtk.STATE_NORMAL, COLORES["toolbar"])
         self.scrolled_window.show_all()
 
     def create_list(self, folder=None):
@@ -122,7 +127,7 @@ class VideoView(gtk.EventBox):
         for video in videos:
             name = os.path.basename(video)
             thumbnail = video[:-4] + ".png"
-            if name[-4]==".":
+            if name[-4] == ".":
                 name = name[:-4]
             name = name.replace("_", " ")
             name = name[name.index(" "):]
@@ -135,9 +140,11 @@ class VideoView(gtk.EventBox):
                 btn.connect("clicked", self.load, video)
                 btn.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
                 if is_xo():
-                    label.modify_font(pango.FontDescription("DejaVu Sans Bold 8"))
+                    label.modify_font(
+                        pango.FontDescription("DejaVu Sans Bold 8"))
                 else:
-                    label.modify_font(pango.FontDescription("DejaVu Sans Bold 12"))
+                    label.modify_font(
+                        pango.FontDescription("DejaVu Sans Bold 12"))
                 label.set_padding(xpad=5, ypad=15)
 
                 if os.path.isfile(thumbnail):
@@ -166,16 +173,16 @@ class VideoView(gtk.EventBox):
     def __force_unfull(self, widget):
         if self.full:
             self.set_full(False)
-        #self.videoplayer.stop()
+        # self.videoplayer.stop()
         #self.videoplayer.load(os.path.join(self.topic, "video.ogv"))
-        #self.videoplayer.pause()
+        # self.videoplayer.pause()
 
     def set_full(self, widget):
         for child in self.tabla.children():
             child.hide()
 
         if self.full:
-            #self.videoplayer.hide()
+            # self.videoplayer.hide()
             self.tabla.set_homogeneous(True)
             self.tabla.set_property("column-spacing", 8)
             self.tabla.set_property("row-spacing", 8)
@@ -188,7 +195,7 @@ class VideoView(gtk.EventBox):
             self.videoplayer.show()
             self.full = True
 
-        #self.videoplayer.stop()
+        # self.videoplayer.stop()
         #self.videoplayer.load(os.path.join(self.topic, "video.ogv"))
 
     def stop(self):
@@ -198,20 +205,20 @@ class VideoView(gtk.EventBox):
     def run(self):
         self.show()
         #self.videoplayer.load(os.path.join(self.topic, "video.ogv"))
-        #self.imagen_juego.load(topic)
+        # self.imagen_juego.load(topic)
 
         self.titulo.set_text("Select a Video")
         try:
             self.reset()
         except AttributeError:
-            pass #first time
+            pass  # first time
         #self.full = False
-        #self.set_full(False)
+        # self.set_full(False)
 
     def load(self, widget, filename):
         name = filename.replace("_", " ")
         name = name[name.index(" "):]
-        if name[-4]==".":
+        if name[-4] == ".":
             name = name[:-4]
         self.titulo.set_text(name)
         self.videoplayer.stop()

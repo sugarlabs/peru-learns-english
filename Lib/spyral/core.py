@@ -7,6 +7,7 @@ import inspect
 
 _inited = False
 
+
 def _init():
     """
     This is the core Spyral code that is run on startup; not only does it setup
@@ -20,6 +21,7 @@ def _init():
     pygame.display.init()
     pygame.font.init()
 
+
 def _quit():
     """
     Cleanly quits pygame and empties the spyral stack.
@@ -27,6 +29,7 @@ def _quit():
     pygame.quit()
     spyral.director._stack = []
     spyral.director._initialized = False
+
 
 def _get_executing_scene():
     """
@@ -36,8 +39,8 @@ def _get_executing_scene():
     """
     for frame, _, _, _, _, _ in inspect.stack():
         args = inspect.getargvalues(frame)
-        if sys.version_info[0:2]==(2,6):
-            # workaround for Python 2.6, see http://bugs.python.org/issue4092 
+        if sys.version_info[0:2] == (2, 6):
+            # workaround for Python 2.6, see http://bugs.python.org/issue4092
             args = inspect.ArgInfo(*args)
         if len(args.args) > 0 and args.args[0] == 'self':
             obj = args.locals['self']

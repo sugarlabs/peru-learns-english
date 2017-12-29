@@ -8,6 +8,7 @@ bound methods; it turns out this is a non-trivial problem.
 
 import weakref
 
+
 class WeakMethodBound(object):
     """
     Holds a weak reference to a bound method for an object.
@@ -16,16 +17,20 @@ class WeakMethodBound(object):
 
         The function being called.
     """
+
     def __init__(self, func):
         self.func = func.im_func
         self.weak_object_ref = weakref.ref(func.im_self)
+
     def _func(self):
         return self.func
     method = property(_func)
+
     def __call__(self, *arg):
         if self.weak_object_ref() == None:
             raise TypeError('Method called on dead object')
         return apply(self.func, (self.weak_object_ref(), ) + arg)
+
 
 class WeakMethodFree(object):
     """
@@ -36,15 +41,19 @@ class WeakMethodFree(object):
 
         The function being called.
     """
+
     def __init__(self, func):
         self.func = weakref.ref(func)
+
     def _func(self):
         return self.func()
     method = property(_func)
+
     def __call__(self, *arg):
         if self.func() == None:
             raise TypeError('Function no longer exist')
         return apply(self.func(), arg)
+
 
 def WeakMethod(func):
     """

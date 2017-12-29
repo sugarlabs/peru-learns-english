@@ -22,6 +22,7 @@ import pygame
 
 old = sys.modules[__name__]
 
+
 class _KeyboardModule(types.ModuleType):
     def __init__(self, *args):
         types.ModuleType.__init__(self, *args)
@@ -61,6 +62,7 @@ class _KeyboardModule(types.ModuleType):
     repeat = property(_get_repeat, _set_repeat)
     delay = property(_get_delay, _set_delay)
     interval = property(_get_interval, _set_interval)
+
 
 # Keep the refcount from going to 0
 keyboard = _KeyboardModule(__name__)

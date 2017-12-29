@@ -6,6 +6,7 @@ import math
 
 _all_sprites = []
 
+
 def _switch_scene():
     """
     Ensure that dead sprites are removed from the list and that sprites are
@@ -13,7 +14,7 @@ def _switch_scene():
     """
     global _all_sprites
     _all_sprites = [s for s in _all_sprites
-                      if s() is not None and s()._expire_static()]
+                    if s() is not None and s()._expire_static()]
 
 
 class Sprite(object):
@@ -135,7 +136,7 @@ class Sprite(object):
             new_size = self._scale * self._image.size
             new_size = (int(new_size[0]), int(new_size[1]))
             if 0 in new_size:
-                self._transform_image = spyral.image._new_spyral_surface((1,1))
+                self._transform_image = spyral.image._new_spyral_surface((1, 1))
                 self._recalculate_offset()
                 self._expire_static()
                 return
@@ -158,7 +159,7 @@ class Sprite(object):
         """
         Performs a step of the given animation, setting any properties that will
         change as a result of the animation (e.g., x position).
-        """        
+        """
         values = animation.evaluate(self, progress)
         for property in animation.properties:
             if property in values:
@@ -190,19 +191,18 @@ class Sprite(object):
         for animation in completed:
             self.stop_animation(animation)
 
-
     # Getters and Setters
     def _get_rect(self):
         """
         Returns a :class:`Rect <spyral.Rect>` representing the position and size
         of this Sprite's image. Note that if you change a property of this rect
         that it will not actually update this sprite's properties:
-        
+
         >>> my_sprite.rect.top = 10
-        
+
         Does not adjust the y coordinate of `my_sprite`. Changing the rect will
         adjust the sprite however
-        
+
         >>> my_sprite.rect = spyral.Rect(10, 10, 64, 64)
         """
         return spyral.Rect(self._pos, self.size)
@@ -565,7 +565,6 @@ class Sprite(object):
                                         self._run_animations,
                                         scene=self._scene())
 
-
     def stop_all_animations(self):
         """
         Stops all animations currently running on this sprite.
@@ -609,4 +608,3 @@ class Sprite(object):
                   rect.
         """
         return self._scene().collide_rect(self, rect)
-        

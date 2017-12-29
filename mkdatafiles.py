@@ -2,13 +2,14 @@
 import os
 import pprint
 
+
 def get_data_files():
     reales = []
     # hacemos una lista de archivo
     for root, directorio, archivos in os.walk("."):
         if not root.startswith("./.git") and \
-            not root.startswith("./Bocetos") and \
-            not root.startswith("./Docs"):
+                not root.startswith("./Bocetos") and \
+                not root.startswith("./Docs"):
             for archivo in archivos:
                 if not archivo.endswith("pyc") and \
                         not archivo.startswith(".") and \
@@ -23,16 +24,16 @@ def get_data_files():
     for archivo in sorted(reales):
         directorio = os.path.dirname(archivo)
         if directorio in carpetas.keys():
-            carpetas[directorio].append( archivo )
+            carpetas[directorio].append(archivo)
         else:
             carpetas[directorio] = []
-            carpetas[directorio].append( archivo )
+            carpetas[directorio].append(archivo)
 
     new_data_files = []
-    for directorio,archivos in carpetas.iteritems():
+    for directorio, archivos in carpetas.iteritems():
         if directorio:
-            new_data_files.append( (directorio+"/", archivos) )
+            new_data_files.append((directorio + "/", archivos))
         else:
-            new_data_files.append( ("", archivos) )
+            new_data_files.append(("", archivos))
 
     return sorted(new_data_files)

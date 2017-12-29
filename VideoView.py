@@ -38,13 +38,15 @@ GRADOS = ["1°", "2°", "3°", "4°", "5°", "6°"]
 EDADES = range(5, 21, 1)
 
 import logging
+
+
 class VideoView(Gtk.EventBox):
 
     __gsignals__ = {
-    "flashcards": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, (GObject.TYPE_PYOBJECT, )),
-    "game": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
+        "flashcards": (GObject.SIGNAL_RUN_FIRST,
+                       GObject.TYPE_NONE, (GObject.TYPE_PYOBJECT, )),
+        "game": (GObject.SIGNAL_RUN_FIRST,
+                 GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
 
     def __init__(self):
 
@@ -61,7 +63,7 @@ class VideoView(Gtk.EventBox):
         self.titulo.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
 
         flashcards = Gtk.Button()
-        #flashcards.set_relief(Gtk.ReliefStyle.NONE)
+        # flashcards.set_relief(Gtk.ReliefStyle.NONE)
         imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/flashcard_banner.png")
         flashcards.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
@@ -73,17 +75,20 @@ class VideoView(Gtk.EventBox):
         self.tabla.set_border_width(10)
 
         self.imagen_juego = Gtk.Button()
-        #self.imagen_juego.set_relief(Gtk.ReliefStyle.NONE)
+        # self.imagen_juego.set_relief(Gtk.ReliefStyle.NONE)
         imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/juego1.png")
         self.imagen_juego.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         self.imagen_juego.add(imagen)
 
         self.flashcards_preview = FlashCardsPreview()
-        self.flashcards_preview.connect("button-press-event", self.__toggle_flashcards)
+        self.flashcards_preview.connect(
+            "button-press-event", self.__toggle_flashcards)
 
-        self.tabla.attach(self.flashcards_preview, 0, 3, 1, 5, xpadding=10, ypadding=10)
-        self.tabla.attach(self.imagen_juego, 3, 5, 3, 5, xpadding=10, ypadding=10)
+        self.tabla.attach(self.flashcards_preview, 0, 3,
+                          1, 5, xpadding=10, ypadding=10)
+        self.tabla.attach(self.imagen_juego, 3, 5, 3,
+                          5, xpadding=10, ypadding=10)
         self.tabla.attach(flashcards, 3, 5, 1, 3, xpadding=10, ypadding=10)
 
         align.add(self.tabla)
@@ -117,7 +122,7 @@ class VideoView(Gtk.EventBox):
             child.hide()
 
         if self.full:
-            #self.videoplayer.hide()
+            # self.videoplayer.hide()
             self.tabla.set_homogeneous(True)
             self.tabla.set_property("column-spacing", 8)
             self.tabla.set_property("row-spacing", 8)
@@ -127,9 +132,8 @@ class VideoView(Gtk.EventBox):
             self.tabla.set_homogeneous(False)
             self.tabla.set_property("column-spacing", 0)
             self.tabla.set_property("row-spacing", 0)
-            #self.videoplayer.show()
+            # self.videoplayer.show()
             self.full = True
-
 
     def stop(self):
         self.flashcards_preview.stop()
@@ -187,7 +191,7 @@ class FlashCardsPreview(Gtk.EventBox):
         Gtk.EventBox.__init__(self)
 
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
-        #self.set_border_width(20)
+        # self.set_border_width(20)
 
         self.vocabulario = []
         self.index_select = 0
@@ -240,15 +244,13 @@ class FlashCardsPreview(Gtk.EventBox):
 
     def utter(self, widget, event):
         palabra = self.label.get_text()
-        #self.label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
-        self.label.set_markup("<b>"+palabra+"</b>")
+        self.label.set_markup("<b>" + palabra + "</b>")
         GObject.idle_add(self.utter2, palabra)
         return True
 
     def utter2(self, palabra):
         decir_demorado(170, 50, 0, "en-gb", palabra)
         self.label.set_markup(palabra)
-        #self.label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["text"])
 
     def go_right(self, widget):
         self.__run_secuencia()
@@ -263,7 +265,8 @@ class FlashCardsPreview(Gtk.EventBox):
     def __run_secuencia(self, widget=None, offset=1):
         self.stop()
         self.path = os.path.join(self.topic, "Imagenes",
-            "%s.png" % self.vocabulario[self.index_select][0])
+                                 "%s.png" %
+                                 self.vocabulario[self.index_select][0])
         self.imagenplayer = ImagePlayer(self.drawing, self.path)
         self.label.set_text(
             self.vocabulario[self.index_select][1])
@@ -317,9 +320,11 @@ class DialogLogin(Gtk.Dialog):
 
     def __init__(self, parent_window=None):
 
-        Gtk.Dialog.__init__(self, title="Identify yourself", parent=parent_window,
-            buttons= ("OK", Gtk.ResponseType.ACCEPT,
-            "Cancel", Gtk.ResponseType.CANCEL))
+        Gtk.Dialog.__init__(self,
+                            title="Identify yourself",
+                            parent=parent_window,
+                            buttons=("OK", Gtk.ResponseType.ACCEPT,
+                                     "Cancel", Gtk.ResponseType.CANCEL))
 
         # self.set_decorated(False)
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
@@ -376,7 +381,7 @@ class DialogLogin(Gtk.Dialog):
             "Apellido": "",
             "Edad": "",
             "Escuela": "",
-             "Grado": ""}
+            "Grado": ""}
         user = self.frame1.combo.get_active_text()
         if user:
             _dict = get_user_dict(user)
@@ -392,11 +397,11 @@ class DialogLogin(Gtk.Dialog):
 class Frame1(Gtk.Frame):
 
     __gsignals__ = {
-    "user": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, (GObject.TYPE_STRING, )),
-    "new-user": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, [])
-        }
+        "user": (GObject.SIGNAL_RUN_FIRST,
+                 GObject.TYPE_NONE, (GObject.TYPE_STRING, )),
+        "new-user": (GObject.SIGNAL_RUN_FIRST,
+                     GObject.TYPE_NONE, [])
+    }
 
     def __init__(self, users):
 
@@ -441,9 +446,9 @@ class Frame1(Gtk.Frame):
 class Frame2(Gtk.Frame):
 
     __gsignals__ = {
-    "activar": (GObject.SIGNAL_RUN_FIRST,
-        GObject.TYPE_NONE, (GObject.TYPE_BOOLEAN, ))
-        }
+        "activar": (GObject.SIGNAL_RUN_FIRST,
+                    GObject.TYPE_NONE, (GObject.TYPE_BOOLEAN, ))
+    }
 
     def __init__(self):
 

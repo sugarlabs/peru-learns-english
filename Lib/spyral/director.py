@@ -8,16 +8,19 @@ _tick = 0
 _max_fps = 30
 _max_ups = 30
 
+
 class NullScene(spyral.Scene):
     def __init__(self, size):
         spyral.Scene.__init__(self, size)
         self.background = spyral.Image(size=size)
+
 
 def quit():
     """
     Cleanly quits out of spyral by emptying the stack.
     """
     spyral._quit()
+
 
 def init(size=(0, 0),
          max_ups=30,
@@ -72,6 +75,7 @@ def init(size=(0, 0),
     _max_ups = max_ups
     _max_fps = max_fps
 
+
 def get_scene():
     """
     Returns the currently running scene; this will be the Scene on the top of
@@ -85,6 +89,7 @@ def get_scene():
     except IndexError:
         return None
 
+
 def get_tick():
     """
     Returns the current tick number, where ticks happen on each update,
@@ -95,6 +100,7 @@ def get_tick():
     :returns: The current number of ticks since the start of the game.
     """
     return _tick
+
 
 def replace(scene):
     """
@@ -120,6 +126,7 @@ def replace(scene):
     # Empty all events!
     pygame.event.get()
 
+
 def pop():
     """
     Pop the top scene off the stack, returning control to the next scene
@@ -136,10 +143,11 @@ def pop():
         scene = _stack[-1]
         spyral.event.handle('director.scene.enter', scene=scene)
     else:
-        scene = NullScene((600,600))
+        scene = NullScene((600, 600))
         _stack.append(scene)
-        #exit(0)
+        # exit(0)
     pygame.event.get()
+
 
 def push(scene):
     """
@@ -157,6 +165,7 @@ def push(scene):
     spyral.event.handle('director.scene.enter', scene=scene)
     # Empty all events!
     pygame.event.get()
+
 
 def run(sugar=False, profiling=False, scene=None):
     """

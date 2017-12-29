@@ -5,6 +5,7 @@ import spyral
 import operator
 import inspect
 
+
 class _FormFieldMeta(type):
     """
     Black magic for wrapping widgets defined as class attributes. See python
@@ -14,16 +15,19 @@ class _FormFieldMeta(type):
     """
     def __new__(meta, name, bases, dict):
         cls = type.__new__(meta, name, bases, dict)
-        is_wrapper = lambda obj: isinstance(obj, spyral.widgets._WidgetWrapper)
+
+        def is_wrapper(obj): return isinstance(
+            obj, spyral.widgets._WidgetWrapper)
         cls.fields = sorted(inspect.getmembers(cls, is_wrapper),
                             key=lambda i: i[1].creation_counter)
         return cls
+
 
 class Form(spyral.View):
     """
     Forms are a subclass of :class:`Views <spyral.View>` that hold a set of
     :ref:`Widgets <api.widgets>`. Forms will manage focus and event delegation between the widgets,
-    ensuring that only one widget is active at a given time. Forms are defined 
+    ensuring that only one widget is active at a given time. Forms are defined
     using a special class-based syntax::
 
         class MyForm(spyral.Form):
@@ -47,6 +51,7 @@ class Form(spyral.View):
 
     def __init__(self, scene):
         spyral.View.__init__(self, scene)
+
         class Fields(object):
             pass
 
@@ -177,7 +182,6 @@ class Form(spyral.View):
         if self._current_focus is not None:
             self._current_focus._handle_key_up(event)
 
-
     def add_widget(self, name, widget, tab_order=None):
         """
         Adds a new widget to this form. When this method is used to add a Widget
@@ -198,12 +202,12 @@ class Form(spyral.View):
         """
         if tab_order is None:
             if len(self._tab_orders) > 0:
-                tab_order = max(self._tab_orders.itervalues())+1
+                tab_order = max(self._tab_orders.itervalues()) + 1
             else:
                 tab_order = 0
             self._tab_orders[widget] = tab_order
         self._widgets.append(widget)
-        #self.add_child(widget)
+        # self.add_child(widget)
         setattr(self.fields, name, widget)
 
     def _get_values(self):
@@ -212,9 +216,9 @@ class Form(spyral.View):
         of each widget with the value associated with that widget. Read-only.
         """
         return dict((widget.name, widget.value) for widget in self._widgets)
-    
+
     values = property(_get_values)
-    
+
     def _blur(self, widget):
         """
         Queues an event indicating that a widget has lost focus.
@@ -224,8 +228,8 @@ class Form(spyral.View):
         """
         e = spyral.Event(name="blurred", widget=widget, form=self)
         self.scene._queue_event("form.%(form_name)s.%(widget)s.blurred" %
-                                    {"form_name": self.__class__.__name__,
-                                     "widget": widget.name},
+                                {"form_name": self.__class__.__name__,
+                                 "widget": widget.name},
                                 e)
         widget._handle_blur(e)
 
@@ -255,8 +259,8 @@ class Form(spyral.View):
         # Make and send the "focused" event
         e = spyral.Event(name="focused", widget=widget, form=self)
         self.scene._queue_event("form.%(form_name)s.%(widget)s.focused" %
-                                    {"form_name": self.__class__.__name__,
-                                     "widget": widget.name},
+                                {"form_name": self.__class__.__name__,
+                                 "widget": widget.name},
                                 e)
         widget._handle_focus(e)
         return
@@ -283,8 +287,8 @@ class Form(spyral.View):
             return
         cur = self._tab_orders[self._current_focus]
         candidates = [(widget, order) for (widget, order)
-                                      in self._tab_orders.iteritems()
-                                      if order > cur]
+                      in self._tab_orders.iteritems()
+                      if order > cur]
         if len(candidates) == 0:
             if not wrap:
                 return
@@ -310,8 +314,8 @@ class Form(spyral.View):
             return
         cur = self._tab_orders[self._current_focus]
         candidates = [(widget, order) for (widget, order)
-                                      in self._tab_orders.iteritems()
-                                      if order < cur]
+                      in self._tab_orders.iteritems()
+                      if order < cur]
         if len(candidates) == 0:
             if not wrap:
                 return

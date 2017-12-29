@@ -8,12 +8,14 @@ import event
 
 CANVAS = None
 
+
 class PygameCanvas(Gtk.EventBox):
 
     """
     mainwindow is the activity intself.
     """
-    def __init__(self, mainwindow, pointer_hint = True):
+
+    def __init__(self, mainwindow, pointer_hint=True):
         Gtk.EventBox.__init__(self)
 
         global CANVAS
@@ -39,10 +41,12 @@ class PygameCanvas(Gtk.EventBox):
         GObject.idle_add(self._run_pygame_cb, main_fn)
 
     def _run_pygame_cb(self, main_fn):
-        assert pygame.display.get_surface() is None, "PygameCanvas.run_pygame can only be called once."
+        assert pygame.display.get_surface(
+        ) is None, "PygameCanvas.run_pygame can only be called once."
 
         # Preinitialize Pygame with the X window ID.
-        assert pygame.display.get_init() == False, "Pygame must not be initialized before calling PygameCanvas.run_pygame."
+        assert pygame.display.get_init(
+        ) == False, "Pygame must not be initialized before calling PygameCanvas.run_pygame."
         os.environ['SDL_WINDOWID'] = str(self._socket.get_id())
         pygame.init()
 

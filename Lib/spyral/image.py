@@ -6,6 +6,7 @@ import pygame
 import spyral
 import copy
 
+
 def _new_spyral_surface(size):
     """
     Internal method for creating a new Spyral-compliant Pygame surface.
@@ -13,6 +14,7 @@ def _new_spyral_surface(size):
     return pygame.Surface((int(size[0]),
                            int(size[1])),
                           pygame.SRCALPHA, 32).convert_alpha()
+
 
 def from_sequence(images, orientation="right", padding=0):
     """
@@ -63,6 +65,7 @@ def from_sequence(images, orientation="right", padding=0):
             base = base + selector * (image.size + (padding, padding))
     return from_conglomerate(sequence)
 
+
 def from_conglomerate(sequence):
     """
     A function that generates a new image from a sequence of
@@ -77,12 +80,13 @@ def from_conglomerate(sequence):
     """
     width, height = 0, 0
     for image, (x, y) in sequence:
-        width = max(width, x+image.width)
-        height = max(height, y+image.height)
+        width = max(width, x + image.width)
+        height = max(height, y + image.height)
     new = Image(size=(width, height))
     for image, (x, y) in sequence:
         new.draw_image(image, (x, y))
     return new
+
 
 def render_nine_slice(image, size):
     """
@@ -110,13 +114,13 @@ def render_nine_slice(image, size):
 
     topleft = surf.subsurface(pygame.Rect((0, 0), ps))
     left = surf.subsurface(pygame.Rect((0, ph), ps))
-    bottomleft = surf.subsurface(pygame.Rect((0, 2*pw), ps))
+    bottomleft = surf.subsurface(pygame.Rect((0, 2 * pw), ps))
     top = surf.subsurface(pygame.Rect((pw, 0), ps))
     mid = surf.subsurface(pygame.Rect((pw, ph), ps))
-    bottom = surf.subsurface(pygame.Rect((pw, 2*ph), ps))
-    topright = surf.subsurface(pygame.Rect((2*pw, 0), ps))
-    right = surf.subsurface(pygame.Rect((2*ph, pw), ps))
-    bottomright = surf.subsurface(pygame.Rect((2*ph, 2*pw), ps))
+    bottom = surf.subsurface(pygame.Rect((pw, 2 * ph), ps))
+    topright = surf.subsurface(pygame.Rect((2 * pw, 0), ps))
+    right = surf.subsurface(pygame.Rect((2 * ph, pw), ps))
+    bottomright = surf.subsurface(pygame.Rect((2 * ph, 2 * pw), ps))
 
     # corners
     s.blit(topleft, (0, 0))
@@ -149,6 +153,7 @@ def render_nine_slice(image, size):
     s.blit(mid, (bw - pw - pw, bh - ph - ph))
     return image
 
+
 class Image(object):
     """
     The image is the basic drawable item in spyral. They can be created
@@ -166,7 +171,7 @@ class Image(object):
                  filename.
     :type size: :class:`Vec2D <spyral.Vec2D>`
     :param str filename:  If filename is set, the file with that name is loaded.
-                          The appendix has a list of the 
+                          The appendix has a list of the
                           :ref:`valid image formats<ref.image_formats>`. If you do
                           not specify a filename, you *must* pass in a size.
 
@@ -174,9 +179,11 @@ class Image(object):
 
     def __init__(self, filename=None, size=None):
         if size is not None and filename is not None:
-            raise ValueError("Must specify exactly one of size and filename. See http://platipy.org/en/latest/spyral_docs.html#spyral.image.Image")
+            raise ValueError(
+                "Must specify exactly one of size and filename. See http://platipy.org/en/latest/spyral_docs.html#spyral.image.Image")
         if size is None and filename is None:
-            raise ValueError("Must specify exactly one of size and filename. See http://platipy.org/en/latest/spyral_docs.html#spyral.image.Image")
+            raise ValueError(
+                "Must specify exactly one of size and filename. See http://platipy.org/en/latest/spyral_docs.html#spyral.image.Image")
 
         if size is not None:
             self._surf = _new_spyral_surface(size)
@@ -247,7 +254,7 @@ class Image(object):
             rect = spyral.Rect(position, size)
         offset = self._calculate_offset(anchor, rect.size)
         pygame.draw.rect(self._surf, color,
-                             (rect.pos + offset, rect.size), border_width)
+                         (rect.pos + offset, rect.size), border_width)
         self._version += 1
         spyral.util.scale_surface.clear(self._surf)
         return self

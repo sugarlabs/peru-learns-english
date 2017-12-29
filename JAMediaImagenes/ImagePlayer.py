@@ -41,7 +41,8 @@ from gi.repository import GObject, Gtk, GdkPixbuf
 
 import os
 import cairo
-import logging
+
+
 class ImagePlayer(GObject.GObject):
 
     def __init__(self, ventana, uri):
@@ -62,7 +63,8 @@ class ImagePlayer(GObject.GObject):
 
         if not self.image_surface:
             if os.path.exists(self.src_path):
-                self.image_surface = cairo.ImageSurface.create_from_png(self.src_path)
+                self.image_surface = cairo.ImageSurface.create_from_png(
+                    self.src_path)
                 self.ventana.queue_draw()
             cr.set_source_surface(self.image_surface, area.x, area.y)
             cr.paint()

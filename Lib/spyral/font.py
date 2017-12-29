@@ -5,6 +5,7 @@ This module defines Font objects, used for rendering text into Images.
 import pygame
 from spyral import Image, Vec2D
 
+
 class _FontImage(Image):
     """
     A wrapper for Images that came from rendering a font. This is necessary
@@ -13,10 +14,12 @@ class _FontImage(Image):
     :param surf: The pygame Surface that will be stored in this _FontImage.
     :type surf: :class:`pygame.Surface`
     """
+
     def __init__(self, surf):
         self._surf = surf
         self._name = None
         self._version = 1
+
 
 class Font(object):
     """
@@ -32,6 +35,7 @@ class Font(object):
                   black ``(0, 0, 0)``.
     :type color: A three-tuple.
     """
+
     def __init__(self, font_path, size, default_color=(0, 0, 0)):
         self.size = int(size)
         self.font = pygame.font.Font(font_path, size)
@@ -64,7 +68,8 @@ class Font(object):
         self.font.set_bold(bold)
         self.font.set_italic(italic)
         text_surface = self.font.render(text, True, color).convert_alpha()
-        background_surface = pygame.Surface(text_surface.get_size(), pygame.SRCALPHA)
+        background_surface = pygame.Surface(
+            text_surface.get_size(), pygame.SRCALPHA)
         background_surface.blit(text_surface, (0, 0))
 
         return _FontImage(background_surface.convert_alpha())
