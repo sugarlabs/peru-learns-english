@@ -165,14 +165,7 @@ class Escena(spyral.Scene):
         self.endgame()
 
     def endgame(self):
-        #self.scene.background = self.scene.img_orig
-        #spyral.event.unregister("Tablero.reset.animation.end", self.scene.tablero.reset)
         self.scene.tablero.visible = False
-        #spyral.event.unregister("Lluvia.y.animation.end", self.scene.l.finalizar)
-        #spyral.event.unregister("Lluvia.demora.animation.end", self.scene.l.sonar_explosion)
-        # self.scene.l.stop_all_animations()
-        # self.scene.l.stop_all_animations()
-        #self.scene.l.visible = False
         self.scene.v.set_text("GAME OVER")
         self.scene.v.stop_all_animations()
         self.scene.j.set_mirame()
@@ -181,7 +174,6 @@ class Escena(spyral.Scene):
             self, "Play again?", self.the_question_click)
         spyral.event.unregister("input.keyboard.down.*",
                                 self.tablero.procesar_tecla)
-        # self.scene.j.set_deambular()
 
     def the_question_click(self, pos):
         if self.the_question.collide_point(pos):
@@ -695,8 +687,6 @@ class Dialogo(spyral.Sprite):
         self.layer = "primer"
 
         self.image = spyral.Image(filename=gamedir("images/Menu_1.png"))
-        # self.image.draw_rect(color=(128,128,128),
-        #        position=(0,0), size=(self.height,self.width))
 
         font_path = gamedir("../fonts/DejaVuSans.ttf")
         self.font = spyral.Font(font_path, 28, (0, 0, 0))
@@ -745,8 +735,6 @@ class Texto(spyral.Sprite):
         self.layer = "primer"
 
         self.image = spyral.Image(filename=gamedir("images/Menu_2.png"))
-        # self.image.draw_rect(color=(128,128,128),
-        #        position=(0,0), size=(self.height,self.width))
 
         font_path = gamedir("../fonts/DejaVuSans.ttf")
         self.font = spyral.Font(font_path, 24, (0, 0, 0))

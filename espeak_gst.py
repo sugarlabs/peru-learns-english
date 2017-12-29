@@ -58,7 +58,6 @@ def voices():
         name, language, dialect = i
         # if name in ('en-rhotic','english_rp','english_wmids'):
         # these voices don't produce sound
-        #   continue
         out.append((language, name))
 
     return out

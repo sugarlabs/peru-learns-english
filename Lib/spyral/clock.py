@@ -202,7 +202,6 @@ class GameClock(object):
         self._next_second = CURRENT_TIME
         self._update_ready = False
         self._frame_ready = False
-#        self._frame_skip = 0
         self._paused = 0
 
         # Schedules

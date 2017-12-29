@@ -25,7 +25,6 @@ def grabar(n=0):
     vocabulario = map(lambda x: x[1], vocabulario)
 
     for item in vocabulario:
-        # if random.choice([True, False]):
         n = random.choice([3, 5])
         guardar(_dict, os.path.abspath(topic), item, n, force_date=target)
 
@@ -48,14 +47,9 @@ def probar(n):
 
         print "= Fecha", target
 
-        # for item in vocabulario:
-
-        # print list(difflib.unified_diff(old_vocab, vocabulario))
         print len(vocabulario)
-        #pprint.pprint (vocabulario)
         grabar(n)
 
 
 if __name__ == '__main__':
-    # grabar()
     probar(45)

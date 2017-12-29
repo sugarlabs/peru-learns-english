@@ -42,7 +42,7 @@ table {
     <div>
     <div class="container">
     {% for item in vocabulario[topic] %}
-        <div style="border: 1px solid black; margin: 10px; padding: 10px"> 
+        <div style="border: 1px solid black; margin: 10px; padding: 10px">
         <img src="{{item.url}}" height="150px" width="150px"/><br />
         <b>{{ item.term }}</b></br>
         <br />
@@ -59,8 +59,9 @@ table {
 </html>
 """
 
+
 def obtener_vocabularios():
-    
+
     result = {}
     for folder in os.listdir(basedir):
         orig_folder = folder
@@ -78,7 +79,8 @@ def obtener_vocabularios():
                 tabla = csv.DictReader(file(vocabulario_file))
                 for linea in tabla:
                     img_folder = os.path.join(folder, "Imagenes")
-                    linea["filename"] = os.path.join(img_folder, linea["id"]+".png")
+                    linea["filename"] = os.path.join(
+                        img_folder, linea["id"] + ".png")
                     linea["url"] = linea["filename"]
                     if not linea.get("preg_alt"):
                         linea["preg_alt"] = "What is this?"
@@ -86,11 +88,12 @@ def obtener_vocabularios():
                         result[title].append(linea)
                     except KeyError:
                         result[title] = [linea]
-    
+
     return result
 
+
 def validar_vocabularios(vocabulario):
-    
+
     faltantes = []
     existentes = glob.glob("../Topics/*/Imagenes/*.png")
     for topic in vocabulario.keys():
@@ -99,21 +102,16 @@ def validar_vocabularios(vocabulario):
                 existentes.pop(existentes.index(item['filename']))
             else:
                 url = "file://" + os.path.abspath(item["filename"])
-                faltantes.append( {"url": url, "term": item['filename']} )
+                faltantes.append({"url": url, "term": item['filename']})
 
     huerfanas = []
     dirname = ""
     for imagen in sorted(existentes):
-        # USE PARA CREAR REGISTROS CSV
-        #if os.path.dirname(imagen) != dirname:
-        #    print " ====", os.path.dirname(imagen)
-        #    dirname = os.path.dirname(imagen)
-        #print os.path.basename(imagen)[:-4] + "," + \
-        #      os.path.basename(imagen)[:-4] + ",,"
-              
+
         url = "file://" + os.path.abspath(imagen)
-        huerfanas.append( {"url":url, "term": imagen} )
+        huerfanas.append({"url": url, "term": imagen})
     return faltantes, huerfanas
+
 
 plantilla = Template(template)
 
@@ -130,4 +128,3 @@ now = datetime.datetime.now()
 fecha = "%i/%i/%i" % (now.day, now.month, now.year)
 
 print plantilla.render(vocabulario=vocabulario, fecha=fecha)
-

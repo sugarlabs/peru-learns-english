@@ -63,7 +63,6 @@ class VideoView(Gtk.EventBox):
         self.titulo.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
 
         flashcards = Gtk.Button()
-        # flashcards.set_relief(Gtk.ReliefStyle.NONE)
         imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/flashcard_banner.png")
         flashcards.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
@@ -75,7 +74,6 @@ class VideoView(Gtk.EventBox):
         self.tabla.set_border_width(10)
 
         self.imagen_juego = Gtk.Button()
-        # self.imagen_juego.set_relief(Gtk.ReliefStyle.NONE)
         imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/juego1.png")
         self.imagen_juego.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
@@ -122,7 +120,6 @@ class VideoView(Gtk.EventBox):
             child.hide()
 
         if self.full:
-            # self.videoplayer.hide()
             self.tabla.set_homogeneous(True)
             self.tabla.set_property("column-spacing", 8)
             self.tabla.set_property("row-spacing", 8)
@@ -132,7 +129,6 @@ class VideoView(Gtk.EventBox):
             self.tabla.set_homogeneous(False)
             self.tabla.set_property("column-spacing", 0)
             self.tabla.set_property("row-spacing", 0)
-            # self.videoplayer.show()
             self.full = True
 
     def stop(self):
@@ -191,7 +187,6 @@ class FlashCardsPreview(Gtk.EventBox):
         Gtk.EventBox.__init__(self)
 
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
-        # self.set_border_width(20)
 
         self.vocabulario = []
         self.index_select = 0
@@ -326,7 +321,6 @@ class DialogLogin(Gtk.Dialog):
                             buttons=("OK", Gtk.ResponseType.ACCEPT,
                                      "Cancel", Gtk.ResponseType.CANCEL))
 
-        # self.set_decorated(False)
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.set_border_width(15)
 

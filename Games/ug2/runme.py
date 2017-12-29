@@ -120,8 +120,6 @@ class Texto(spyral.Sprite):
         self.layer = "primer"
 
         self.image = spyral.Image(filename=gamedir("images/Menu_2.png"))
-        # self.image.draw_rect(color=(128,128,128),
-        #        position=(0,0), size=(self.height,self.width))
 
         font_path = gamedir("../fonts/DejaVuSans.ttf")
         self.font = spyral.Font(font_path, 24, (0, 0, 0))
@@ -277,7 +275,6 @@ class Tablero(spyral.View):
                         nexos_rest += 1
         if bloques_rest == 0 and nexos_rest > 0:
             # Avisar al usuario que debe llenar la pantalla
-            # self.win()
             dialogo = Dialogo(self, "You must reforestate the entire board.")
         elif bloques_rest == 0 and nexos_rest == 0:
             self.win()
@@ -296,7 +293,6 @@ class Tablero(spyral.View):
                         return bloque
 
     def movimiento(self, ubicacion):
-        # print "Movimiento: "+str(ubicacion)
         self.scene.tablero.cursor.ubicacion = spyral.Vec2D(ubicacion)
 
         if self.ACTIVADO:
@@ -330,7 +326,6 @@ class Tablero(spyral.View):
                         self.desactivar()
 
     def handle_motion(self, pos):
-        #self.scene.tablero.cursor.pos = pos
         self.scene.tablero.cursor.visible = False
         if self.ACTIVADO:
             from_pos = (pos - self.scene.tablero.pos) / spyral.Vec2D(140, 140)
@@ -345,10 +340,6 @@ class Tablero(spyral.View):
 
     def openall(self):
         spyral.event.queue("Bloque.open")
-
-    # def update(self):
-    #    for line in self.estado:
-    #        self.
 
 
 class Nexo (spyral.Sprite):
@@ -742,14 +733,6 @@ class Bloque (spyral.Sprite):
 
     def final(self):
         self.abierto = True
-        # self.blink()
-
-        # ESCAPAR
-        #self.escape_animation = spyral.Animation("pos", QuadraticOutTuple(self.pos, self.lado_mas_cercano()), 3)
-        # try:
-        #    self.animate (self.escape_animation)
-        # except:
-        #    pass
 
     def iopen(self, unless=None):
         if (not unless == self) and (not self.MATCH):

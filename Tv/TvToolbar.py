@@ -112,7 +112,6 @@ class Toolbar(gtk.EventBox):
         activo = not widget.get_active()
         if activo:
             self.instructionsbutton.set_active(False)
-            # self.playlistbutton.set_active(False)
             self.emit("activar", "Playlist")
         else:
             self.homebutton.set_active(False)
@@ -121,8 +120,6 @@ class Toolbar(gtk.EventBox):
         activo = not widget.get_active()
         if activo:
             self.emit("activar", "Instructions")
-            # self.homebutton.set_active(False)
-            # self.playlistbutton.set_active(False)
         else:
             self.instructionsbutton.set_active(False)
 
@@ -154,7 +151,6 @@ class Menu(gtk.Menu):
             item = gtk.MenuItem()
             boton = gtk.Button(directorio)
             boton.get_child().modify_font(pango.FontDescription("DejaVu Sans Bold 16"))
-            # boton.set_relief(gtk.RELIEF_NONE)
             uppername = directorio.upper()
             if uppername == "BEGINNER":
                 boton.modify_bg(gtk.STATE_NORMAL, COLORES["verde"])

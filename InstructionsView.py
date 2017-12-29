@@ -37,7 +37,6 @@ class HelpSlideShow(Gtk.EventBox):
         Gtk.EventBox.__init__(self)
 
         self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
-        # self.set_border_width(20)
 
         self.slides = []
         self.index_select = 0
@@ -52,7 +51,6 @@ class HelpSlideShow(Gtk.EventBox):
         self.drawing.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         self.label.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         self.label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
-        #self.label.modify_font(Pango.FontDescription("DejaVu Sans 16"))
         eventcontainer.add(self.label)
 
         hbox = Gtk.HBox()
@@ -105,8 +103,6 @@ class HelpSlideShow(Gtk.EventBox):
         self.label.set_text("Slide %i of %i" % (
             self.index_select % len(self.slides) + 1, len(self.slides)))
 
-        # self.left.hide()
-        # self.right.hide()
         return True
 
     def toggle(self):
@@ -141,7 +137,6 @@ class HelpSlideShow(Gtk.EventBox):
         self.slides = sorted(glob("Imagenes/slides/slide*.png"))
         self.index_select = -1
         self.__run_secuencia()
-        # self.play()
         return False
 
 

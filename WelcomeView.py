@@ -82,8 +82,6 @@ class WelcomeView(Gtk.EventBox):
         b.set_relief(Gtk.ReliefStyle.NONE)
         b.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         b.connect("clicked", self.__start)
-        #b.connect("enter-notify-event", self.__color, "start")
-        #b.connect("leave-notify-event", self.__decolor, "start")
         img = Gtk.Image()
         img.set_from_file("Imagenes/start.png")
         b.set_image(img)

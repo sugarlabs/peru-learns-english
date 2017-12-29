@@ -173,16 +173,12 @@ class VideoView(gtk.EventBox):
     def __force_unfull(self, widget):
         if self.full:
             self.set_full(False)
-        # self.videoplayer.stop()
-        #self.videoplayer.load(os.path.join(self.topic, "video.ogv"))
-        # self.videoplayer.pause()
 
     def set_full(self, widget):
         for child in self.tabla.children():
             child.hide()
 
         if self.full:
-            # self.videoplayer.hide()
             self.tabla.set_homogeneous(True)
             self.tabla.set_property("column-spacing", 8)
             self.tabla.set_property("row-spacing", 8)
@@ -195,25 +191,18 @@ class VideoView(gtk.EventBox):
             self.videoplayer.show()
             self.full = True
 
-        # self.videoplayer.stop()
-        #self.videoplayer.load(os.path.join(self.topic, "video.ogv"))
-
     def stop(self):
         self.videoplayer.stop()
         self.hide()
 
     def run(self):
         self.show()
-        #self.videoplayer.load(os.path.join(self.topic, "video.ogv"))
-        # self.imagen_juego.load(topic)
 
         self.titulo.set_text("Select a Video")
         try:
             self.reset()
         except AttributeError:
             pass  # first time
-        #self.full = False
-        # self.set_full(False)
 
     def load(self, widget, filename):
         name = filename.replace("_", " ")

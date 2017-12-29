@@ -149,7 +149,6 @@ class CampodeEstrellas(spyral.Sprite):
 
         self.delay = DelayAnimation(5)
         self.delay.property = "demora"
-        # self.defered_spawn()
 
         spyral.event.register(
             "CampodeEstrellas.demora.animation.end", self.spawn)
@@ -420,10 +419,6 @@ class Nave (spyral.View):
         PALABRA, ARCHIVO = self.palabras[self.elegida]
         if self.result == None:
             decir(100, 37, 0, "en-gb", PALABRA)
-        # elif self.result==True:
-        #    decir(100, 37, 0, "en-gb", "correct!")
-        # elif self.result==False:
-        #    decir(50, 57, 0, "en-gb", "wrong!")
         self.result = None
 
     def reset(self):
@@ -805,13 +800,7 @@ class Escena(spyral.Scene):
         self.layers = ["abajo", "arriba", "primer"]
         self.puntos = 0
 
-        # img = spyral.Image(filename=gamedir(
-        #    "imagenes/Crux-20100220.jpg")).scale(self.scene.size)
         img = spyral.Image(size=(700, 700))
-
-        #n = pygame.Surface.convert_alpha(img._surf)
-        #n.fill((64, 0, 0, 127))
-        #img._surf.blit(n, (0, 0))
 
         self.background = img
 

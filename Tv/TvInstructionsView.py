@@ -36,7 +36,6 @@ class HelpSlideShow(gtk.EventBox):
         gtk.EventBox.__init__(self)
 
         self.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
-        # self.set_border_width(20)
 
         self.slides = []
         self.index_select = 0
@@ -105,8 +104,6 @@ class HelpSlideShow(gtk.EventBox):
         self.label.set_text("Slide %i of %i" % (
             self.index_select % len(self.slides) + 1, len(self.slides)))
 
-        # self.left.hide()
-        # self.right.hide()
         return True
 
     def toggle(self):
@@ -141,7 +138,6 @@ class HelpSlideShow(gtk.EventBox):
         self.slides = sorted(glob("Imagenes/tv_slides/slide*.png"))
         self.index_select = -1
         self.__run_secuencia()
-        # self.play()
         return False
 
 
