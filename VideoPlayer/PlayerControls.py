@@ -19,32 +19,34 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, GdkPixbuf
+
 import os
-import gtk
-import gobject
 
 from Globales import COLORES
 
 BASE_PATH = os.path.dirname(__file__)
 
 
-class PlayerControls(gtk.EventBox):
+class PlayerControls(Gtk.EventBox):
 
     __gsignals__ = {
-    "accion-controls": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING,))}
+    "accion-controls": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, (GObject.TYPE_STRING,))}
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
 
-        vbox = gtk.HBox()
+        vbox = Gtk.HBox()
 
-        self.pix_play = gtk.gdk.pixbuf_new_from_file_at_size(
+        self.pix_play = GdkPixbuf.Pixbuf.new_from_file(
             os.path.join(BASE_PATH, "Iconos", "play.svg"), 24, 24)
-        self.pix_paused = gtk.gdk.pixbuf_new_from_file_at_size(
+        self.pix_paused = GdkPixbuf.Pixbuf.new_from_file(
             os.path.join(BASE_PATH, "Iconos", "pausa.svg"), 24, 24)
 
         self.play = JAMediaToolButton(pixels=24)
@@ -84,17 +86,17 @@ class PlayerControls(gtk.EventBox):
         self.play.set_playing(self.pix_paused)
 
 
-class JAMediaToolButton(gtk.ToolButton):
+class JAMediaToolButton(Gtk.ToolButton):
 
     def __init__(self, pixels=34):
 
-        gtk.ToolButton.__init__(self)
+        Gtk.ToolButton.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
 
         self.estado = False
         self.pixels = pixels
-        self.imagen = gtk.Image()
+        self.imagen = Gtk.Image()
         self.set_icon_widget(self.imagen)
         self.imagen.show()
 
@@ -102,7 +104,7 @@ class JAMediaToolButton(gtk.ToolButton):
         self.show_all()
 
     def set_imagen(self, archivo=None, flip=False, rotacion=False):
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
             os.path.join(archivo), self.pixels, self.pixels)
         if flip:
             pixbuf = pixbuf.flip(True)

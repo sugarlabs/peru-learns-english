@@ -32,8 +32,10 @@ sys.path.insert(1, gamedir("../../Lib/"))
 sys.path.insert(1, gamedir("../../"))
 
 from Globales import decir
-import gtk
-gtk.threads_init()
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 import pygame
 pygame.mixer.init()
@@ -177,7 +179,7 @@ class CampodeEstrellas(spyral.Sprite):
                               spyral.Animation("B", spyral.easing.Linear(0, 80), duration=3))
         self.turnblue_anim.property = "turnblue"
 
-        self.turnblue_alt_anim = ( spyral.Animation("R", spyral.easing.Linear(128, 0), duration=2) & 
+        self.turnblue_alt_anim = ( spyral.Animation("R", spyral.easing.Linear(128, 0), duration=2) &
                   spyral.Animation("G", spyral.easing.Linear(192, 0), duration=3) &
                   spyral.Animation("B", spyral.easing.Linear(148, 80), duration=2))
         self.turnblue_alt_anim.property = "turnblue"
@@ -571,7 +573,7 @@ class Nave (spyral.View):
             bloque.stop_animation(self.invasion_anim)
         self.scene.T.stop_animation(self.delay_anim)
         self.visible = False
-        
+
         self.scene.campo.speedup(self.result)
         self.scene.campo.defered_spawn(5)
 
@@ -808,7 +810,7 @@ class Escena(spyral.Scene):
         Escena.MUTE = value
 
     def gtk_main_iteration(self):
-        gtk.main_iteration(False)
+        Gtk.main_iteration(False)
 
 # Tomado de Spyral
 class DelayAnimation(spyral.Animation):

@@ -19,9 +19,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Pango
+
 import os
-import gtk
-import gobject
 import sys
 
 installed_dir = os.path.abspath(os.path.dirname(__file__))
@@ -39,49 +41,37 @@ from CreditsView import CreditsView
 
 BASE_PATH = os.path.dirname(__file__)
 
-OLD_GTK = False
-if gtk.pygtk_version[0]==2 and gtk.pygtk_version[1]<15:
-    OLD_GTK = True
-
 def ocultar(widget):
     widget.stop()
 
-class App(gtk.Window):
+class App(Gtk.Window):
 
     def __init__(self):
 
-        gtk.Window.__init__(self)
+        Gtk.Window.__init__(self)
 
         self.set_title("Peru Learns English")
         self.set_icon_from_file(os.path.join(
             BASE_PATH , "Iconos", "icono.svg"))
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.set_border_width(2)
 
         # FIXME: No funciona en la XO con fedora 11
         #self.set_resizable(False)
 
-        if OLD_GTK:
-            # Esto es un hack para que gtk viejo en la XO no se maree
-            width = gtk.gdk.screen_width() - 6
-            height = gtk.gdk.screen_height() - 100
-            self.set_geometry_hints(self, width, height, width, height)
-        else:
-            gobject.idle_add(self.maximize)
-
         main = Main()
         self.add(main)
 
-        gobject.idle_add(self.show)
+        GObject.idle_add(self.show)
 
-class Main(gtk.EventBox):
+class Main(Gtk.EventBox):
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.vbox = gtk.VBox()
+        self.vbox = Gtk.VBox()
         self.toolbar = Toolbar()
         self.vbox.pack_start(self.toolbar, False, False, 0)
 
@@ -128,7 +118,7 @@ class Main(gtk.EventBox):
             run = not bool(self.creditsview.visor.update)
             if run:
                 self.creditsview.visor.modify_bg(
-                    gtk.STATE_NORMAL, COLORES["text"])
+                    Gtk.StateFlags.NORMAL, COLORES["text"])
             self.creditsview.visor.new_handle(run)
 
     def __game_return_to_video(self, widget, topic):
@@ -178,10 +168,10 @@ class Main(gtk.EventBox):
 
     def __salir(self, widget=None, senial=None):
         self.videoview.stop()
-        gtk.main_quit()
+        Gtk.main_quit()
         sys.exit(0)
 
 
 if __name__ == '__main__':
     App()
-    gtk.main()
+    Gtk.main()

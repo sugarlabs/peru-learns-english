@@ -18,7 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 
 # Positioning constants below:
 # POS_CENTER_BELOW: Centers the pop-up window below the button (default).
@@ -44,16 +46,16 @@ _rtl_pos_map = {
         POS_NW_SW: POS_NE_SE,
 }
 
-class PopupMenuButton(gtk.ToggleButton):
+class PopupMenuButton(Gtk.ToggleButton):
     """A toggle button that displays a pop-up menu when clicked."""
 
     # INITIALIZERS #
     def __init__(self, label=None, menu_pos=POS_NW_SW):
-        gtk.ToggleButton.__init__(self, label=label)
-        self.set_relief(gtk.RELIEF_NONE)
-        self.set_menu(gtk.Menu())
+        Gtk.ToggleButton.__init__(self, label=label)
+        self.set_relief(Gtk.ReliefStyle.NONE)
+        self.set_menu(Gtk.Menu())
 
-        if self.get_direction() == gtk.TEXT_DIR_LTR:
+        if self.get_direction() == Gtk.StateFlags.DIR_LTR:
             self.menu_pos = menu_pos
         else:
             self.menu_pos = _rtl_pos_map.get(menu_pos, POS_SE_NE)
@@ -69,7 +71,7 @@ class PopupMenuButton(gtk.ToggleButton):
         self._menu_selection_done_id = self.menu.connect('selection-done', self._on_menu_selection_done)
 
     def get_label_widget(self):
-        return self.child
+        return self.get_child()
 
     def _get_text(self):
         return unicode(self.get_label())
@@ -77,46 +79,12 @@ class PopupMenuButton(gtk.ToggleButton):
         self.set_label(value)
     text = property(_get_text, _set_text)
 
-
-    # METHODS #
-    def _calculate_popup_pos(self, menu):
-        menu_width, menu_height = 0, 0
-        menu_alloc = menu.get_allocation()
-        if menu_alloc.height > 1:
-            menu_height = menu_alloc.height
-            menu_width = menu_alloc.width
-        else:
-            menu_width, menu_height = menu.size_request()
-
-        btn_window_xy = self.window.get_origin()
-        btn_alloc = self.get_allocation()
-
-        # Default values are POS_SW_NW
-        x = btn_window_xy[0] + btn_alloc.x
-        y = btn_window_xy[1] + btn_alloc.y - menu_height
-        if self.menu_pos == POS_NW_SW:
-            y = btn_window_xy[1] + btn_alloc.y + btn_alloc.height
-        elif self.menu_pos == POS_NE_SE:
-            x -= (menu_width - btn_alloc.width)
-            y = btn_window_xy[1] + btn_alloc.y + btn_alloc.height
-        elif self.menu_pos == POS_SE_NE:
-            x -= (menu_width - btn_alloc.width)
-        elif self.menu_pos == POS_NW_NE:
-            x += btn_alloc.width
-            y = btn_window_xy[1] + btn_alloc.y
-        elif self.menu_pos == POS_CENTER_BELOW:
-            x -= (menu_width - btn_alloc.width) / 2
-        elif self.menu_pos == POS_CENTER_ABOVE:
-            x -= (menu_width - btn_alloc.width) / 2
-            y = btn_window_xy[1] - menu_height
-        return (x, y, True)
-
     def popdown(self):
         self.menu.popdown()
         return True
 
     def popup(self):
-        self.menu.popup(None, None, self._calculate_popup_pos, 0, 0)
+        self.menu.popup_at_widget(self, POS_NW_SW, self.menu_pos, None)
 
 
     # EVENT HANDLERS #

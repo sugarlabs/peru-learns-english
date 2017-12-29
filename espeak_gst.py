@@ -17,7 +17,11 @@
 import logging
 logger = logging.getLogger('speak')
 
-import gst
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gst', '1.0')
+from gi.repository import Gst
+
 import espeak
 
 PITCH_MAX = 200

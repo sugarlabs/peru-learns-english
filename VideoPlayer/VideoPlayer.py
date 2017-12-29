@@ -19,8 +19,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gtk
-import gobject
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject
 
 from PlayerControls import PlayerControls
 from ProgressPlayer import ProgressPlayer
@@ -29,24 +30,24 @@ from JAMediaReproductor.JAMediaReproductor import JAMediaReproductor
 from Globales import COLORES
 
 
-class VideoPlayer(gtk.EventBox):
+class VideoPlayer(Gtk.EventBox):
 
     __gsignals__ = {
-    "full": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, []),
-    "endfile": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, []), }
+    "full": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, []),
+    "endfile": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, []), }
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["text"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["text"])
 
         self.player = False
         self.video_path = ""
 
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         self.visor = Visor()
         self.progress = ProgressPlayer()
         self.control = PlayerControls()
@@ -133,12 +134,12 @@ class VideoPlayer(gtk.EventBox):
             self.player.pause()
 
 
-class Visor(gtk.DrawingArea):
+class Visor(Gtk.DrawingArea):
 
     def __init__(self):
 
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["text"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["text"])
 
         self.show_all()

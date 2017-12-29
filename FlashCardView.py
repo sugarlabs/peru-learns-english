@@ -22,10 +22,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Pango
+
 import os
-import gtk
-import pango
-import gobject
 
 from ConfigParser import SafeConfigParser
 
@@ -38,17 +39,17 @@ from Globales import guardar
 from Globales import Dialog
 
 
-class FlashCardView(gtk.EventBox):
+class FlashCardView(Gtk.EventBox):
 
     __gsignals__ = {
-    "video": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
+    "video": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
         self.set_border_width(4)
 
         self.user = False
@@ -58,7 +59,7 @@ class FlashCardView(gtk.EventBox):
         self.index_select = 0
         self.click_event = True
 
-        tabla = gtk.Table(rows=11, columns=5, homogeneous=True)
+        tabla = Gtk.Table(rows=11, columns=5, homogeneous=True)
         tabla.set_property("column-spacing", 5)
         tabla.set_property("row-spacing", 5)
         tabla.set_border_width(4)
@@ -71,7 +72,7 @@ class FlashCardView(gtk.EventBox):
 
         self.derecha = Derecha()
         tabla.attach(self.derecha, 3, 5, 2, 10)
-        self.statuslabel = gtk.Label("Flashcard 0 of 0")
+        self.statuslabel = Gtk.Label("Flashcard 0 of 0")
         tabla.attach(self.statuslabel, 3, 5, 10, 11)
 
         self.add(tabla)
@@ -91,12 +92,12 @@ class FlashCardView(gtk.EventBox):
             self.flashcard.disconnect(self.click_event)
             self.click_event = None
         self.click_event = self.flashcard.connect("button-press-event", self.repetir_respuesta, respuesta)
-        #self.cabecera.question_label.modify_fg(gtk.STATE_NORMAL, COLORES["rojo"])
-        gobject.idle_add(self.__show_phrase, respuesta)
+        #self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
+        GObject.idle_add(self.__show_phrase, respuesta)
 
     def __show_phrase(self, respuesta):
         decir_demorado(170, 50, 0, "en-gb", respuesta)
-        self.cabecera.question_label.modify_fg(gtk.STATE_NORMAL, COLORES["window"])
+        self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.cabecera.question_label.set_markup(respuesta)
         if not self.click_event:
             self.click_event = self.flashcard.connect("button-press-event", self.repetir_respuesta, respuesta)
@@ -116,10 +117,10 @@ class FlashCardView(gtk.EventBox):
             self.vocabulario[self.index_select][0], r)
         if self.index_select < len(self.vocabulario) - 1:
             self.index_select += 1
-            gobject.timeout_add(500, self.__load, self.index_select)
+            GObject.timeout_add(500, self.__load, self.index_select)
         else:
             dialog = Dialog("Congratulations!", self.get_toplevel(),
-                ("OK", gtk.RESPONSE_ACCEPT),
+                ("OK", Gtk.ResponseType.ACCEPT),
                 "Memorization task completed for today.")
             dialog.run()
             dialog.destroy()
@@ -135,9 +136,8 @@ class FlashCardView(gtk.EventBox):
             self.imagenplayer.stop()
             del(self.imagenplayer)
             self.imagenplayer = False
-        self.imagenplayer = ImagePlayer(self.flashcard.drawing)
-        self.imagenplayer.load(path)
-        #self.cabecera.question_label.modify_fg(gtk.STATE_NORMAL, COLORES["rojo"])
+        self.imagenplayer = ImagePlayer(self.flashcard.drawing, path)
+        #self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
         pregunta = self.vocabulario[index][2] if len(self.vocabulario[index]) > 2 else ""
         if pregunta == "":
             pregunta = "What is this?"
@@ -147,7 +147,7 @@ class FlashCardView(gtk.EventBox):
             self.flashcard.disconnect(self.click_event)
             self.click_event = None
         self.click_event = self.flashcard.connect("button-press-event", self.repetir_pregunta, pregunta)
-        gobject.idle_add(self.__activar, pregunta)
+        GObject.idle_add(self.__activar, pregunta)
         return False
 
     def repetir_pregunta(self, widget, event, pregunta):
@@ -156,7 +156,7 @@ class FlashCardView(gtk.EventBox):
             self.click_event = None
         self.click_event = None
         self.cabecera.question_label.set_markup("<b>"+pregunta+"</b>")
-        gobject.idle_add(self.__activar, pregunta)
+        GObject.idle_add(self.__activar, pregunta)
 
     def repetir_respuesta(self, widget, event, respuesta):
         if self.click_event:
@@ -164,14 +164,14 @@ class FlashCardView(gtk.EventBox):
             self.click_event = None
         self.click_event = None
         self.cabecera.question_label.set_markup("<b>"+respuesta+"</b>")
-        gobject.idle_add(self.__show_phrase, respuesta)
+        GObject.idle_add(self.__show_phrase, respuesta)
 
     def __activar(self, pregunta):
         decir_demorado(170, 50, 0, "en", pregunta)
         if not self.click_event:
             self.click_event = self.flashcard.connect("button-press-event", self.repetir_pregunta, pregunta)
         self.derecha.activar()
-        self.cabecera.question_label.modify_fg(gtk.STATE_NORMAL, COLORES["window"])
+        self.cabecera.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.cabecera.question_label.set_markup(pregunta)
         self.statuslabel.set_text("Flashcard %i of %i" % (
             self.index_select + 1, len(self.vocabulario)))
@@ -209,53 +209,53 @@ class FlashCardView(gtk.EventBox):
             self.vocabulario = vocabulario
             self.topic = topic
             self.index_select = 0
-            gobject.timeout_add(500, self.__load, self.index_select)
+            GObject.timeout_add(500, self.__load, self.index_select)
         else:
             self.topic = topic
             dialog = Dialog("Come back tomorrow!", self.get_toplevel(),
-                ("OK", gtk.RESPONSE_ACCEPT),
+                ("OK", Gtk.ResponseType.ACCEPT),
                 "You've memorized all flashcards for today.")
             dialog.run()
             dialog.destroy()
             self.emit("video", self.topic)
 
 
-class FlashCard(gtk.EventBox):
+class FlashCard(Gtk.EventBox):
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
         self.set_border_width(10)
 
-        self.drawing = gtk.DrawingArea()
-        self.drawing.modify_bg(gtk.STATE_NORMAL, COLORES["text"])
+        self.drawing = Gtk.DrawingArea()
+        self.drawing.modify_bg(Gtk.StateFlags.NORMAL, COLORES["text"])
 
         self.add(self.drawing)
         self.show_all()
 
 
-class Cabecera(gtk.EventBox):
+class Cabecera(Gtk.EventBox):
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
 
-        tabla = gtk.Table(rows=2, columns=5, homogeneous=True)
+        tabla = Gtk.Table(rows=2, columns=5, homogeneous=True)
         tabla.set_property("column-spacing", 2)
         tabla.set_property("row-spacing", 2)
         tabla.set_border_width(4)
 
-        self.titulo = gtk.Label("Título")
-        self.titulo.modify_font(pango.FontDescription("DejaVu Sans Bold 14"))
-        self.titulo.modify_fg(gtk.STATE_NORMAL, COLORES["window"])
+        self.titulo = Gtk.Label("Título")
+        self.titulo.modify_font(Pango.FontDescription("DejaVu Sans Bold 14"))
+        self.titulo.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
 
-        self.question_label = gtk.Label("What is This?")
-        self.question_label.modify_font(pango.FontDescription("DejaVu Sans 16"))
-        self.question_label.modify_fg(gtk.STATE_NORMAL, COLORES["window"])
+        self.question_label = Gtk.Label("What is This?")
+        self.question_label.modify_font(Pango.FontDescription("DejaVu Sans 16"))
+        self.question_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
 
         tabla.attach(self.titulo, 0, 3, 0, 1)
         tabla.attach(self.question_label, 0, 3, 1, 2)
@@ -264,52 +264,52 @@ class Cabecera(gtk.EventBox):
         self.show_all()
 
 
-class Derecha(gtk.EventBox):
+class Derecha(Gtk.EventBox):
 
     __gsignals__ = {
-    "siguiente": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_INT, )),
-    "show_answer": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, [])}
+    "siguiente": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_INT, )),
+    "show_answer": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, [])}
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
 
-        tabla = gtk.Table(rows=4, columns=3, homogeneous=True)
+        tabla = Gtk.Table(rows=4, columns=3, homogeneous=True)
         tabla.set_property("column-spacing", 5)
         tabla.set_property("row-spacing", 5)
         tabla.set_border_width(4)
 
-        self.label = gtk.Label("")
-        self.label.set_property("justify", gtk.JUSTIFY_CENTER)
-        self.label.modify_font(pango.FontDescription("DejaVu Sans Bold 20"))
-        self.label.modify_fg(gtk.STATE_NORMAL, COLORES["text"])
+        self.label = Gtk.Label("")
+        self.label.set_property("justify", Gtk.Justification.CENTER)
+        self.label.modify_font(Pango.FontDescription("DejaVu Sans Bold 20"))
+        self.label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["text"])
         tabla.attach(self.label, 0, 3, 0, 2)
         self.label.set_line_wrap(True)
 
         button0 = MyButton("Show me\nthe answer",
-            pango.FontDescription("DejaVu Sans 16"))
+            Pango.FontDescription("DejaVu Sans 16"))
         button0.connect("clicked", self.__show_answer)
         tabla.attach(button0, 0, 3, 0, 2, ypadding=5)
 
         button1 = MyButton("I\nknew\nit !",
-            pango.FontDescription("DejaVu Sans 10"))
-        button1.modify_bg(gtk.STATE_NORMAL, COLORES["verde"])
+            Pango.FontDescription("DejaVu Sans 10"))
+        button1.modify_bg(Gtk.StateFlags.NORMAL, COLORES["verde"])
         button1.connect("clicked", self.__seguir)
         tabla.attach(button1, 0, 1, 2, 4)
 
         button2 = MyButton("I\nwasn't\nsure.",
-            pango.FontDescription("DejaVu Sans 10"))
-        button2.modify_bg(gtk.STATE_NORMAL, COLORES["amarillo"])
+            Pango.FontDescription("DejaVu Sans 10"))
+        button2.modify_bg(Gtk.StateFlags.NORMAL, COLORES["amarillo"])
         button2.connect("clicked", self.__seguir)
         tabla.attach(button2, 1, 2, 2, 4)
 
         button3 = MyButton("I\nhad\nno idea !",
-            pango.FontDescription("DejaVu Sans 10"))
-        button3.modify_bg(gtk.STATE_NORMAL, COLORES["rojo"])
+            Pango.FontDescription("DejaVu Sans 10"))
+        button3.modify_bg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
         button3.connect("clicked", self.__seguir)
         tabla.attach(button3, 2, 3, 2, 4)
 
@@ -343,14 +343,14 @@ class Derecha(gtk.EventBox):
         self.buttons[0].set_sensitive(True)
 
 
-class MyButton(gtk.Button):
+class MyButton(Gtk.Button):
 
     def __init__(self, text, font):
 
-        gtk.Button.__init__(self)
+        Gtk.Button.__init__(self)
 
-        label = gtk.Label(text)
-        label.set_property("justify", gtk.JUSTIFY_CENTER)
+        label = Gtk.Label(text)
+        label.set_property("justify", Gtk.Justification.CENTER)
         label.modify_font(font)
         self.set_property("child", label)
         self.show_all()

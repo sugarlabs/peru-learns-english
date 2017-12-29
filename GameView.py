@@ -19,11 +19,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Pango
+
 import os
 import sys
-import gobject
-import gtk
-import pango
 
 installed_dir = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(1, os.path.join(installed_dir, "Lib/"))
@@ -36,69 +37,69 @@ import pygame
 from ConfigParser import SafeConfigParser
 from Globales import COLORES
 
-class GameMenu(gtk.EventBox):
+class GameMenu(Gtk.EventBox):
 
     __gsignals__ = {
-    "video": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
+    "video": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        vb = gtk.VBox()
+        vb = Gtk.VBox()
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
         self.set_border_width(4)
 
-        self.inside_vb = gtk.VBox()
+        self.inside_vb = Gtk.VBox()
 
-        self.ug1 = gtk.Button()
-        imagen = gtk.Image()
+        self.ug1 = Gtk.Button()
+        imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/juego1_banner.png")
-        self.ug1.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        self.ug1.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         self.ug1.add(imagen)
 
-        self.ug2 = gtk.Button()
-        imagen = gtk.Image()
+        self.ug2 = Gtk.Button()
+        imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/juego2_banner.png")
-        self.ug2.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        self.ug2.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         self.ug2.add(imagen)
 
-        self.ug3 = gtk.Button()
-        imagen = gtk.Image()
+        self.ug3 = Gtk.Button()
+        imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/juego3_banner.png")
-        self.ug3.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        self.ug3.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         self.ug3.add(imagen)
 
-        butt = gtk.Button()
-        img = gtk.Image()
+        butt = Gtk.Button()
+        img = Gtk.Image()
         img.set_from_file("Imagenes/go_back_disabled.png")
-        butt.set_relief(gtk.RELIEF_NONE)
+        butt.set_relief(Gtk.ReliefStyle.NONE)
         butt.set_image(img)
         butt.set_label("")
-        butt.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        butt.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         butt.connect("clicked", self.__emit_video)
         butt.connect("enter-notify-event", self.__color)
         butt.connect("leave-notify-event", self.__decolor)
         img.show()
         butt.show()
-        self.back = gtk.Alignment(1, 1, 0, 0)
+        self.back = Gtk.Alignment(xalign=1, yalign=1, xscale=0, yscale=0)
         self.back.add(butt)
 
-        self.titulo = gtk.Label("Título")
-        self.titulo.set_property("justify", gtk.JUSTIFY_CENTER)
-        self.titulo.modify_font(pango.FontDescription("DejaVu Sans Bold 20"))
-        self.titulo.modify_fg(gtk.STATE_NORMAL, COLORES["window"])
+        self.titulo = Gtk.Label("Título")
+        self.titulo.set_property("justify", Gtk.Justification.CENTER)
+        self.titulo.modify_font(Pango.FontDescription("DejaVu Sans Bold 20"))
+        self.titulo.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.titulo.set_padding(xpad=20, ypad=50)
 
         index = 0
         for butt in self.ug1, self.ug2, self.ug3:
-            butt.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
-            butt.modify_fg(gtk.STATE_NORMAL, COLORES["text"])
-            butt.child.modify_font(pango.FontDescription(
+            butt.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
+            butt.modify_fg(Gtk.StateFlags.NORMAL, COLORES["text"])
+            butt.get_child().modify_font(Pango.FontDescription(
                 "DejaVu Sans Bold 12"))
-            align = gtk.Alignment(0.5, 0.5, 0.3, 0.2)
+            align = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0.3, yscale=0.2)
             align.add(butt)
             self.inside_vb.add(align)
             butt.connect("clicked", self.start_game, index)
@@ -106,7 +107,7 @@ class GameMenu(gtk.EventBox):
 
         self.inside_vb.add(self.back)
 
-        vb.pack_start(self.titulo, expand=False, fill=False)
+        vb.pack_start(self.titulo, False, False, 0)
         vb.add(self.inside_vb)
 
         self.gameview = GameView()
@@ -142,17 +143,17 @@ class GameMenu(gtk.EventBox):
         self.emit("video", self.topic)
 
 
-class GameView(gtk.EventBox):
+class GameView(Gtk.EventBox):
 
     __gsignals__ = {
-    "video": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
+    "video": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
         self.set_border_width(4)
 
         self.game = False
@@ -161,23 +162,23 @@ class GameView(gtk.EventBox):
 
         self.pygamecanvas = sugargame2.canvas.PygameCanvas(self)
 
-        grupo1 = gtk.Alignment(0.5, 1, 0, 0)
-        separador = gtk.HSeparator()
+        grupo1 = Gtk.Alignment(xalign=0.5, yalign=1, xscale=0, yscale=0)
+        separador = Gtk.HSeparator()
         grupo1.add(separador)
 
-        grupo2 = gtk.Alignment(1, 0.5, 0, 0)
+        grupo2 = Gtk.Alignment(xalign=0.5, yalign=1, xscale=0, yscale=0)
         grupo2.add(self.pygamecanvas)
 
-        grupo3 = gtk.Alignment(1, 1, 0, 0)
-        vbox = gtk.VBox()
+        grupo3 = Gtk.Alignment(xalign=1, yalign=1, xscale=0, yscale=0)
+        vbox = Gtk.VBox()
 
-        butt = gtk.Button()
-        img = gtk.Image()
+        butt = Gtk.Button()
+        img = Gtk.Image()
         img.set_from_file("Imagenes/go_back_disabled.png")
-        butt.set_relief(gtk.RELIEF_NONE)
+        butt.set_relief(Gtk.ReliefStyle.NONE)
         butt.set_image(img)
         butt.set_label("")
-        butt.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        butt.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         butt.connect("clicked", self.__reset_menu)
         butt.connect("enter-notify-event", self.__color)
         butt.connect("leave-notify-event", self.__decolor)
@@ -185,20 +186,20 @@ class GameView(gtk.EventBox):
         butt.show()
         vbox.add(butt)
 
-        self.score_label = gtk.Label("SCORE\n0")
-        self.score_label.set_property("justify", gtk.JUSTIFY_RIGHT)
-        self.score_label.modify_font(pango.FontDescription(
+        self.score_label = Gtk.Label("SCORE\n0")
+        self.score_label.set_property("justify", Gtk.Justification.RIGHT)
+        self.score_label.modify_font(Pango.FontDescription(
             "DejaVu Sans Mono 22"))
-        self.score_label.modify_fg(gtk.STATE_NORMAL, COLORES["window"])
+        self.score_label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.score_label.set_padding(xpad=30, ypad=30)
         self.score_label.show()
         vbox.add(self.score_label)
 
-        butt = gtk.ToggleButton()
+        butt = Gtk.ToggleButton()
         butt.set_active(False)
-        butt.set_relief(gtk.RELIEF_NONE)
-        butt.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
-        img = gtk.Image()
+        butt.set_relief(Gtk.ReliefStyle.NONE)
+        butt.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
+        img = Gtk.Image()
         img.set_from_file("Iconos/stock_volume-max.svg")
         butt.set_image(img)
         butt.set_label("")
@@ -210,10 +211,10 @@ class GameView(gtk.EventBox):
         vbox.add(butt)
         grupo3.add(vbox)
 
-        hb = gtk.HBox()
-        hb.pack_start(grupo1)
+        hb = Gtk.HBox()
+        hb.pack_start(grupo1, True, True, 0)
         hb.add(grupo2)
-        hb.pack_end(grupo3)
+        hb.pack_end(grupo3, True, True, 0)
 
         self.add(hb)
 
@@ -244,7 +245,7 @@ class GameView(gtk.EventBox):
 
     def __reset_menu(self, widget):
         self.stop()
-        self.parent.show_all()
+        self.get_parent().show_all()
         self.hide()
 
     def __reescalar(self, widget, event):
@@ -264,9 +265,9 @@ class GameView(gtk.EventBox):
         self.game = Intro(self.topic, self)
         spyral.director.push(self.game)
         if self.pump:
-            gobject.source_remove(self.pump)
+            GObject.source_remove(self.pump)
             self.pump = False
-        self.pump = gobject.timeout_add(300, self.__pump)
+        self.pump = GObject.timeout_add(300, self.__pump)
         try:
             spyral.director.run(sugar=True)
         except pygame.error:
@@ -284,9 +285,9 @@ class GameView(gtk.EventBox):
         self.game = Escena(self.topic, self)
         spyral.director.push(self.game)
         if self.pump:
-            gobject.source_remove(self.pump)
+            GObject.source_remove(self.pump)
             self.pump = False
-        self.pump = gobject.timeout_add(300, self.__pump)
+        self.pump = GObject.timeout_add(300, self.__pump)
         try:
             spyral.director.run(sugar=True)
         except pygame.error:
@@ -304,9 +305,9 @@ class GameView(gtk.EventBox):
         self.game = Escena(self.topic, gameview=self)
         spyral.director.push(self.game)
         if self.pump:
-            gobject.source_remove(self.pump)
+            GObject.source_remove(self.pump)
             self.pump = False
-        self.pump = gobject.timeout_add(300, self.__pump)
+        self.pump = GObject.timeout_add(300, self.__pump)
         try:
             spyral.director.run(sugar=True)
         except pygame.error:
@@ -318,7 +319,7 @@ class GameView(gtk.EventBox):
 
     def stop(self):
         if self.pump:
-            gobject.source_remove(self.pump)
+            GObject.source_remove(self.pump)
             self.pump = False
         if self.game:
             pygame.mixer.music.stop()
@@ -341,6 +342,6 @@ class GameView(gtk.EventBox):
             gamestart=self.__run_game_3
         if self.firstrun:
             self.firstrun = False
-            gobject.idle_add(self.pygamecanvas.run_pygame(gamestart))
+            GObject.idle_add(self.pygamecanvas.run_pygame(gamestart))
         else:
-            gobject.idle_add(gamestart())
+            GObject.idle_add(gamestart())

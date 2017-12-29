@@ -1,18 +1,20 @@
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject
+
 import os
-import gtk
-import gobject
 import pygame
 import event
 
 CANVAS = None
 
-class PygameCanvas(gtk.EventBox):
-    
+class PygameCanvas(Gtk.EventBox):
+
     """
     mainwindow is the activity intself.
     """
     def __init__(self, mainwindow, pointer_hint = True):
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
         global CANVAS
         assert CANVAS == None, "Only one PygameCanvas can be created, ever."
@@ -20,32 +22,32 @@ class PygameCanvas(gtk.EventBox):
 
         # Initialize Events translator before widget gets "realized".
         self.translator = event.Translator(mainwindow, self)
-        
+
         self._mainwindow = mainwindow
 
-        self.set_flags(gtk.CAN_FOCUS)
-        
-        self._socket = gtk.Socket()
+        self.set_can_focus(True)
+
+        self._socket = Gtk.Socket()
         self.add(self._socket)
         self.show_all()
 
     def run_pygame(self, main_fn):
         # Run the main loop after a short delay.  The reason for the delay is that the
         # Sugar activity is not properly created until after its constructor returns.
-        # If the Pygame main loop is called from the activity constructor, the 
+        # If the Pygame main loop is called from the activity constructor, the
         # constructor never returns and the activity freezes.
-        gobject.idle_add(self._run_pygame_cb, main_fn)
+        GObject.idle_add(self._run_pygame_cb, main_fn)
 
     def _run_pygame_cb(self, main_fn):
         assert pygame.display.get_surface() is None, "PygameCanvas.run_pygame can only be called once."
-        
+
         # Preinitialize Pygame with the X window ID.
         assert pygame.display.get_init() == False, "Pygame must not be initialized before calling PygameCanvas.run_pygame."
         os.environ['SDL_WINDOWID'] = str(self._socket.get_id())
         pygame.init()
-        
+
         # Restore the default cursor.
-        self._socket.window.set_cursor(None)
+        self._socket.get_window().set_cursor(None)
 
         # Initialize the Pygame window.
         r = self.get_allocation()

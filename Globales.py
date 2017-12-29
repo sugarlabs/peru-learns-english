@@ -19,28 +19,30 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk
+
 import os
 import commands
 import csv
-import gtk
 import datetime
 import json
 import codecs
-from gtk import gdk
 import espeak
 
 BASE_PATH = os.path.dirname(__file__)
 
 COLORES = {
-    "window": gdk.color_parse("#ffffff"),
-    "toolbar": gdk.color_parse("#778899"),
-    "contenido": gdk.color_parse("#778899"),
-    "menu": gdk.color_parse("#ff6600"),
-    "title": gdk.color_parse("#FE8200"),
-    "text": gdk.color_parse("#000000"),
-    "rojo": gdk.color_parse("#fe6e00"),
-    "verde": gdk.color_parse("#00ff00"),
-    "amarillo": gdk.color_parse("#ffff00"),
+    "window": Gdk.color_parse("#ffffff"),
+    "toolbar": Gdk.color_parse("#778899"),
+    "contenido": Gdk.color_parse("#778899"),
+    "menu": Gdk.color_parse("#ff6600"),
+    "title": Gdk.color_parse("#FE8200"),
+    "text": Gdk.color_parse("#000000"),
+    "rojo": Gdk.color_parse("#fe6e00"),
+    "verde": Gdk.color_parse("#00ff00"),
+    "amarillo": Gdk.color_parse("#ffff00"),
     }
 
 """
@@ -202,15 +204,15 @@ def decir(pitch, speed, word_gap, voice, text):
         _audio = espeak.AudioGrab()
         _audio.speak(text, pitch, speed, voice)
 
-class Dialog(gtk.Dialog):
+class Dialog(Gtk.Dialog):
 
     def __init__(self, title, parent, buttons, text):
 
-        gtk.Dialog.__init__(self, title=title, parent=parent, buttons=buttons)
+        Gtk.Dialog.__init__(self, title=title, parent=parent, buttons=buttons)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.set_border_width(15)
-        label = gtk.Label(text)
+        label = Gtk.Label(text)
         label.show()
         self.vbox.pack_start(label, True, True, 5)
         self.connect("realize", self.__realize)

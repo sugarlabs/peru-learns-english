@@ -143,8 +143,8 @@ def pop():
 
 def push(scene):
     """
-    Place *scene* on the top of the stack, and move control to it. This does 
-    return control, so remember to return immediately after calling it. 
+    Place *scene* on the top of the stack, and move control to it. This does
+    return control, so remember to return immediately after calling it.
 
     :param scene: The new scene.
     :type scene: :class:`Scene <spyral.Scene>`
@@ -176,7 +176,11 @@ def run(sugar=False, profiling=False, scene=None):
     if scene is not None:
         push(scene)
     if sugar:
-        import gtk
+
+        import gi
+        gi.require_version('Gtk', '3.0')
+        from gi.repository import Gtk
+
     if not _stack:
         return
     old_scene = None
@@ -208,8 +212,8 @@ def run(sugar=False, profiling=False, scene=None):
                 """
                 global _tick
                 if sugar:
-                    while gtk.events_pending():
-                        gtk.main_iteration()
+                    while Gtk.events_pending():
+                        Gtk.main_iteration()
                 if len(pygame.event.get([pygame.VIDEOEXPOSE])) > 0:
                     scene.redraw()
                     scene._handle_event("director.redraw")

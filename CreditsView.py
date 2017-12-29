@@ -19,23 +19,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import os
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject
 import cairo
-import gtk
-import gobject
+import os
 
 from Globales import COLORES
 
 BASE_PATH = os.path.dirname(__file__)
 
 
-class CreditsView(gtk.EventBox):
+class CreditsView(Gtk.EventBox):
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.set_border_width(10)
 
         self.visor = Visor()
@@ -52,19 +53,19 @@ class CreditsView(gtk.EventBox):
         self.visor.new_handle(True)
 
 
-class Visor(gtk.DrawingArea):
+class Visor(Gtk.DrawingArea):
 
     def __init__(self):
 
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["text"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["text"])
 
         self.posy = 300
         self.update = False
         self.imagen = False
 
-        self.connect("expose-event", self.__expose)
+        self.connect("draw", self.__expose)
         self.connect("realize", self.__realize)
         self.show_all()
 
@@ -72,13 +73,14 @@ class Visor(gtk.DrawingArea):
         self.new_handle(True)
 
     def __realize(self, widget):
-        cr = self.window.cairo_create()
+        cr = self.get_window().cairo_create()
         self.imagen = cairo.ImageSurface.create_from_png(os.path.join(
             BASE_PATH, "Iconos", "creditos_ple.png"))
 
     def __handle(self):
-        cr = self.window.cairo_create()
-        x, y, w, h = self.get_allocation()
+        cr = self.get_window().cairo_create()
+        alloc = self.get_allocation()
+        x, y, w, h = alloc.x, alloc.y, alloc.width, alloc.height
         cr.rectangle (x, y, w, h)
         ww = self.imagen.get_width()
         hh = self.imagen.get_height()
@@ -92,8 +94,8 @@ class Visor(gtk.DrawingArea):
 
     def new_handle(self, reset):
         if self.update:
-            gobject.source_remove(self.update)
+            GObject.source_remove(self.update)
             self.update = False
         if reset:
             self.posy = 300
-            self.update = gobject.timeout_add(50, self.__handle)
+            self.update = GObject.timeout_add(50, self.__handle)

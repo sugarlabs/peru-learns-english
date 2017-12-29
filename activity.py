@@ -16,18 +16,26 @@
 
 """HelloWorld Activity: A case study for developing an activity."""
 
-import gtk
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
 import logging
 
 from gettext import gettext as _
 
-from sugar.activity import activity
-from sugar.graphics.toolbarbox import ToolbarBox
-from sugar.activity.widgets import ActivityButton
-from sugar.activity.widgets import ActivityToolbox
-from sugar.activity.widgets import TitleEntry
-from sugar.activity.widgets import StopButton
-from sugar.activity.widgets import ShareButton
+from sugar3.activity import activity
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.graphics.toolbarbox import ToolbarBox
+from sugar3.graphics.toolbarbox import ToolbarButton
+
+from sugar3.activity.widgets import ActivityButton
+from sugar3.activity.widgets import ActivityToolbarButton
+from sugar3.activity.widgets import StopButton
+from sugar3.activity.widgets import TitleEntry
+from sugar3.activity.widgets import StopButton
+from sugar3.activity.widgets import ShareButton
 
 from ple import Main
 
@@ -42,22 +50,13 @@ class HelloWorldActivity(activity.Activity):
         # make the share option insensitive
         self.max_participants = 1
 
-        # toolbar with the new toolbar redesign
         toolbar_box = ToolbarBox()
 
-        activity_button = ActivityButton(self)
+        activity_button = ActivityToolbarButton(self)
         toolbar_box.toolbar.insert(activity_button, 0)
         activity_button.show()
 
-        title_entry = TitleEntry(self)
-        toolbar_box.toolbar.insert(title_entry, -1)
-        title_entry.show()
-
-        share_button = ShareButton(self)
-        toolbar_box.toolbar.insert(share_button, -1)
-        share_button.show()
-        
-        separator = gtk.SeparatorToolItem()
+        separator = Gtk.SeparatorToolItem()
         separator.props.draw = False
         separator.set_expand(True)
         toolbar_box.toolbar.insert(separator, -1)
@@ -66,12 +65,10 @@ class HelloWorldActivity(activity.Activity):
         stop_button = StopButton(self)
         toolbar_box.toolbar.insert(stop_button, -1)
         stop_button.show()
-
         self.set_toolbar_box(toolbar_box)
         toolbar_box.show()
-
         # label with the text, make the string translatable
-        #label = gtk.Label(_("Hello World!"))
+        #label = Gtk.Label(_("Hello World!"))
         main = Main()
 
         self.set_canvas(main)

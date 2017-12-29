@@ -19,10 +19,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GObject, Pango
+
 import os
-import gtk
-import gobject
-import pango
 
 from ConfigParser import SafeConfigParser
 
@@ -36,48 +37,48 @@ from Globales import decir_demorado
 GRADOS = ["1°", "2°", "3°", "4°", "5°", "6°"]
 EDADES = range(5, 21, 1)
 
-
-class VideoView(gtk.EventBox):
+import logging
+class VideoView(Gtk.EventBox):
 
     __gsignals__ = {
-    "flashcards": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, )),
-    "game": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, ))}
+    "flashcards": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_PYOBJECT, )),
+    "game": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_STRING, ))}
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
         self.set_border_width(4)
 
         self.full = False
         self.topic = False
 
-        self.titulo = gtk.Label("Título")
-        self.titulo.modify_font(pango.FontDescription("DejaVu Sans Bold 20"))
-        self.titulo.modify_fg(gtk.STATE_NORMAL, COLORES["window"])
+        self.titulo = Gtk.Label("Título")
+        self.titulo.modify_font(Pango.FontDescription("DejaVu Sans Bold 20"))
+        self.titulo.modify_fg(Gtk.StateFlags.NORMAL, COLORES["window"])
 
-        flashcards = gtk.Button()
-        #flashcards.set_relief(gtk.RELIEF_NONE)
-        imagen = gtk.Image()
+        flashcards = Gtk.Button()
+        #flashcards.set_relief(Gtk.ReliefStyle.NONE)
+        imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/flashcard_banner.png")
-        flashcards.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        flashcards.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         flashcards.add(imagen)
 
-        align = gtk.Alignment(0.5, 0.2, 1, 0.9)
-        self.tabla = gtk.Table(rows=5, columns=5, homogeneous=True)
+        align = Gtk.Alignment(xalign=0.5, yalign=0.2, xscale=1, yscale=0.9)
+        self.tabla = Gtk.Table(rows=5, columns=5, homogeneous=True)
         self.tabla.attach(self.titulo, 0, 5, 0, 1)
         self.tabla.set_border_width(10)
 
-        self.imagen_juego = gtk.Button()
-        #self.imagen_juego.set_relief(gtk.RELIEF_NONE)
-        imagen = gtk.Image()
+        self.imagen_juego = Gtk.Button()
+        #self.imagen_juego.set_relief(Gtk.ReliefStyle.NONE)
+        imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/juego1.png")
-        self.imagen_juego.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        self.imagen_juego.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         self.imagen_juego.add(imagen)
-        
+
         self.flashcards_preview = FlashCardsPreview()
         self.flashcards_preview.connect("button-press-event", self.__toggle_flashcards)
 
@@ -93,7 +94,7 @@ class VideoView(gtk.EventBox):
         self.imagen_juego.connect("button-press-event", self.__emit_game)
 
     def __toggle_flashcards(self, widget, accion):
-        gobject.idle_add(self.flashcards_preview.toggle)
+        GObject.idle_add(self.flashcards_preview.toggle)
 
     def __force_unfull(self, widget):
         if self.full:
@@ -106,13 +107,13 @@ class VideoView(gtk.EventBox):
     def __emit_flashcards(self, widget):
         dialog = DialogLogin(self.get_toplevel())
         ret = dialog.run()
-        if ret == gtk.RESPONSE_ACCEPT:
+        if ret == Gtk.ResponseType.ACCEPT:
             datos = dialog.get_user_dict()
             self.emit("flashcards", (self.topic, datos))
         dialog.destroy()
 
     def set_full(self, widget):
-        for child in self.tabla.children():
+        for child in self.tabla.get_children():
             child.hide()
 
         if self.full:
@@ -133,7 +134,7 @@ class VideoView(gtk.EventBox):
     def stop(self):
         self.flashcards_preview.stop()
         if self.flashcards_preview.control:
-            gobject.source_remove(self.flashcards_preview.control)
+            GObject.source_remove(self.flashcards_preview.control)
             self.flashcards_preview.control = False
         self.hide()
 
@@ -152,14 +153,14 @@ class VideoView(gtk.EventBox):
         self.set_full(False)
 
 
-class GameImage(gtk.DrawingArea):
+class GameImage(Gtk.DrawingArea):
 
     def __init__(self):
 
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["text"])
-        self.add_events(gtk.gdk.BUTTON_PRESS_MASK)
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["text"])
+        self.add_events(Gdk.BUTTON_PRESS_MASK)
 
         self.imagenplayer = False
         self.path = False
@@ -175,18 +176,17 @@ class GameImage(gtk.DrawingArea):
     def load(self, topic):
         self.stop()
         self.path = os.path.abspath("Imagenes/juego1.png")
-        self.imagenplayer = ImagePlayer(self)
-        self.imagenplayer.load(self.path)
+        self.imagenplayer = ImagePlayer(self, self.path)
         return False
 
 
-class FlashCardsPreview(gtk.EventBox):
+class FlashCardsPreview(Gtk.EventBox):
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
         #self.set_border_width(20)
 
         self.vocabulario = []
@@ -196,59 +196,59 @@ class FlashCardsPreview(gtk.EventBox):
         self.control = False
         self.topic = False
 
-        self.drawing = gtk.DrawingArea()
-        eventcontainer = gtk.EventBox()
-        eventcontainer.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
-        self.label = gtk.Label("Text")
-        self.label.set_property("justify", gtk.JUSTIFY_CENTER)
-        self.drawing.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
-        self.label.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
-        self.label.modify_fg(gtk.STATE_NORMAL, COLORES["text"])
-        self.label.modify_font(pango.FontDescription("DejaVu Sans 20"))
+        self.drawing = Gtk.DrawingArea()
+        eventcontainer = Gtk.EventBox()
+        eventcontainer.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
+        self.label = Gtk.Label("Text")
+        self.label.set_property("justify", Gtk.Justification.CENTER)
+        self.drawing.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
+        self.label.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
+        self.label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["text"])
+        self.label.modify_font(Pango.FontDescription("DejaVu Sans 20"))
         eventcontainer.add(self.label)
         eventcontainer.connect("button-press-event", self.utter)
 
-        hbox = gtk.HBox()
-        self.left = gtk.Button()
-        self.left.set_relief(gtk.RELIEF_NONE)
-        imagen = gtk.Image()
+        hbox = Gtk.HBox()
+        self.left = Gtk.Button()
+        self.left.set_relief(Gtk.ReliefStyle.NONE)
+        imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/flecha_izquierda.png")
-        self.left.modify_bg(gtk.STATE_NORMAL, COLORES["rojo"])
+        self.left.modify_bg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
         self.left.add(imagen)
         self.left.connect("clicked", self.go_left)
-        hbox.pack_start(self.left)
+        hbox.pack_start(self.left, True, True, 0)
 
         hbox.add(eventcontainer)
 
-        self.right = gtk.Button()
-        self.right.set_relief(gtk.RELIEF_NONE)
-        imagen = gtk.Image()
+        self.right = Gtk.Button()
+        self.right.set_relief(Gtk.ReliefStyle.NONE)
+        imagen = Gtk.Image()
         imagen.set_from_file("Imagenes/flecha_derecha.png")
-        self.right.modify_bg(gtk.STATE_NORMAL, COLORES["rojo"])
+        self.right.modify_bg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
         self.right.add(imagen)
         self.right.connect("clicked", self.go_right)
-        hbox.pack_end(self.right)
+        hbox.pack_end(self.right, True, True, 0)
 
-        tabla = gtk.Table(rows=8, columns=1, homogeneous=True)
+        tabla = Gtk.Table(rows=8, columns=1, homogeneous=True)
         tabla.attach(self.drawing, 0, 1, 0, 7, ypadding=5)
         tabla.attach(hbox, 0, 1, 7, 8)
 
-        align = gtk.Alignment(0.5, 0.5, 0.7, 0.95)
+        align = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0.7, yscale=0.95)
         align.add(tabla)
 
         self.add(align)
 
     def utter(self, widget, event):
         palabra = self.label.get_text()
-        #self.label.modify_fg(gtk.STATE_NORMAL, COLORES["rojo"])
+        #self.label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["rojo"])
         self.label.set_markup("<b>"+palabra+"</b>")
-        gobject.idle_add(self.utter2, palabra)
+        GObject.idle_add(self.utter2, palabra)
         return True
 
     def utter2(self, palabra):
         decir_demorado(170, 50, 0, "en-gb", palabra)
         self.label.set_markup(palabra)
-        #self.label.modify_fg(gtk.STATE_NORMAL, COLORES["text"])
+        #self.label.modify_fg(Gtk.StateFlags.NORMAL, COLORES["text"])
 
     def go_right(self, widget):
         self.__run_secuencia()
@@ -264,8 +264,7 @@ class FlashCardsPreview(gtk.EventBox):
         self.stop()
         self.path = os.path.join(self.topic, "Imagenes",
             "%s.png" % self.vocabulario[self.index_select][0])
-        self.imagenplayer = ImagePlayer(self.drawing)
-        self.imagenplayer.load(self.path)
+        self.imagenplayer = ImagePlayer(self.drawing, self.path)
         self.label.set_text(
             self.vocabulario[self.index_select][1])
         if self.index_select < len(self.vocabulario) - 1:
@@ -279,19 +278,19 @@ class FlashCardsPreview(gtk.EventBox):
 
     def toggle(self):
         if self.control:
-            gobject.source_remove(self.control)
+            GObject.source_remove(self.control)
             self.control = False
-            self.modify_bg(gtk.STATE_NORMAL, COLORES['rojo'])
+            self.modify_bg(Gtk.StateFlags.NORMAL, COLORES['rojo'])
             self.left.show()
             self.right.show()
         else:
-            self.modify_bg(gtk.STATE_NORMAL, COLORES['window'])
+            self.modify_bg(Gtk.StateFlags.NORMAL, COLORES['window'])
             self.play()
             self.left.hide()
             self.right.hide()
 
     def reset(self):
-        self.modify_bg(gtk.STATE_NORMAL, COLORES['window'])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES['window'])
         self.play()
 
     def stop(self):
@@ -302,7 +301,7 @@ class FlashCardsPreview(gtk.EventBox):
 
     def play(self):
         if not self.control:
-            self.control = gobject.timeout_add(4000, self.__run_secuencia)
+            self.control = GObject.timeout_add(4000, self.__run_secuencia)
 
     def load(self, topic):
         self.stop()
@@ -314,16 +313,16 @@ class FlashCardsPreview(gtk.EventBox):
         return False
 
 
-class DialogLogin(gtk.Dialog):
+class DialogLogin(Gtk.Dialog):
 
     def __init__(self, parent_window=None):
 
-        gtk.Dialog.__init__(self, title="Identify yourself", parent=parent_window,
-            buttons= ("OK", gtk.RESPONSE_ACCEPT,
-            "Cancel", gtk.RESPONSE_CANCEL))
+        Gtk.Dialog.__init__(self, title="Identify yourself", parent=parent_window,
+            buttons= ("OK", Gtk.ResponseType.ACCEPT,
+            "Cancel", Gtk.ResponseType.CANCEL))
 
         # self.set_decorated(False)
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["window"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["window"])
         self.set_border_width(15)
 
         dirpath = os.path.join(os.environ["HOME"], ".Ple")
@@ -343,11 +342,8 @@ class DialogLogin(gtk.Dialog):
         self.vbox.pack_start(self.frame2, False, False, 0)
         self.vbox.show_all()
 
-        width, height = self.size_request()
-        screen = gtk.gdk.Screen()
-        x = screen.get_width() - width - 50
-        y = (screen.get_height() - height) / 2
-        self.move(x,y)
+        size = self.size_request()
+        width, height = size.width, size.height
 
         if users:
             self.frame1.show_all()
@@ -393,18 +389,18 @@ class DialogLogin(gtk.Dialog):
         return _dict
 
 
-class Frame1(gtk.Frame):
+class Frame1(Gtk.Frame):
 
     __gsignals__ = {
-    "user": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING, )),
-    "new-user": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, [])
+    "user": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_STRING, )),
+    "new-user": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, [])
         }
 
     def __init__(self, users):
 
-        gtk.Frame.__init__(self)
+        Gtk.Frame.__init__(self)
 
         self.set_border_width(4)
         self.modify_bg(0, COLORES["window"])
@@ -412,15 +408,15 @@ class Frame1(gtk.Frame):
         self.get_property("label-widget").modify_bg(0, COLORES["window"])
         self.set_label_align(0.5, 1.0)
 
-        box = gtk.HBox()
-        self.combo = gtk.combo_box_new_text()
+        box = Gtk.HBox()
+        self.combo = Gtk.ComboBoxText.new()
         self.combo.connect('changed', self.__changed)
-        button = gtk.Button("new user.")
+        button = Gtk.Button("new user.")
         button.connect("clicked", self.__new_user)
         box.pack_start(self.combo, False, False, 5)
         box.pack_end(button, False, False, 5)
 
-        event = gtk.EventBox()
+        event = Gtk.EventBox()
         event.modify_bg(0, COLORES["window"])
         event.set_border_width(4)
         event.add(box)
@@ -442,16 +438,16 @@ class Frame1(gtk.Frame):
         self.emit("user", widget.get_active_text())
 
 
-class Frame2(gtk.Frame):
+class Frame2(Gtk.Frame):
 
     __gsignals__ = {
-    "activar": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN, ))
+    "activar": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, (GObject.TYPE_BOOLEAN, ))
         }
 
     def __init__(self):
 
-        gtk.Frame.__init__(self)
+        Gtk.Frame.__init__(self)
 
         self.set_border_width(4)
         self.modify_bg(0, COLORES["window"])
@@ -459,45 +455,45 @@ class Frame2(gtk.Frame):
         self.get_property("label-widget").modify_bg(0, COLORES["window"])
         self.set_label_align(0.5, 1.0)
 
-        tabla = gtk.Table(rows=5, columns=2, homogeneous=True)
+        tabla = Gtk.Table(rows=5, columns=2, homogeneous=True)
         tabla.set_property("column-spacing", 5)
         tabla.set_property("row-spacing", 5)
 
-        label = gtk.Label("Nombre:")
+        label = Gtk.Label("Nombre:")
         tabla.attach(label, 0, 1, 0, 1)
-        self.nombre = gtk.Entry()
+        self.nombre = Gtk.Entry()
         self.nombre.connect("changed", self.__update_data)
         tabla.attach(self.nombre, 1, 2, 0, 1)
 
-        label = gtk.Label("Apellido:")
+        label = Gtk.Label("Apellido:")
         tabla.attach(label, 0, 1, 1, 2)
-        self.apellido = gtk.Entry()
+        self.apellido = Gtk.Entry()
         self.apellido.connect("changed", self.__update_data)
         tabla.attach(self.apellido, 1, 2, 1, 2)
 
-        label = gtk.Label("Escuela:")
+        label = Gtk.Label("Escuela:")
         tabla.attach(label, 0, 1, 2, 3)
-        self.escuela = gtk.Entry()
+        self.escuela = Gtk.Entry()
         self.escuela.connect("changed", self.__update_data)
         tabla.attach(self.escuela, 1, 2, 2, 3)
 
-        label = gtk.Label("Grado:")
+        label = Gtk.Label("Grado:")
         tabla.attach(label, 0, 1, 3, 4)
-        self.grado = gtk.combo_box_new_text()
+        self.grado = Gtk.ComboBoxText.new()
         self.grado.connect("changed", self.__update_data)
         for g in GRADOS:
             self.grado.append_text(g)
         tabla.attach(self.grado, 1, 2, 3, 4)
 
-        label = gtk.Label("Edad:")
+        label = Gtk.Label("Edad:")
         tabla.attach(label, 0, 1, 4, 5)
-        self.edad = gtk.combo_box_new_text()
+        self.edad = Gtk.ComboBoxText.new()
         self.edad.connect("changed", self.__update_data)
         for e in EDADES:
             self.edad.append_text(str(e))
         tabla.attach(self.edad, 1, 2, 4, 5)
 
-        event = gtk.EventBox()
+        event = Gtk.EventBox()
         event.modify_bg(0, COLORES["window"])
         event.set_border_width(4)
         event.add(tabla)

@@ -35,44 +35,41 @@ Descripción:
         para rotar la imágen
 """
 
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import GObject, Gtk, GdkPixbuf
+
 import os
-import gobject
-import gtk
+import cairo
+import logging
+class ImagePlayer(GObject.GObject):
 
+    def __init__(self, ventana, uri):
 
-class ImagePlayer(gobject.GObject):
-
-    def __init__(self, ventana):
-
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.ventana = ventana
-        self.src_path = ""
-        self.pixbuf = False
+        self.src_path = uri
+        self.image_surface = False
 
-        self.ventana.connect("expose-event", self.__set_size)
+        self.ventana.connect("draw", self.__draw_cb)
 
-    def __set_size(self, widget, event):
-        if not self.pixbuf:
-            return
+    def __draw_cb(self, widget, cr):
         rect = self.ventana.get_allocation()
-        ctx = self.ventana.get_property("window").cairo_create()
-        ctx.rectangle(event.area.x, event.area.y,
-            event.area.width, event.area.height)
-        ctx.clip()
-        temp_pixbuf = self.pixbuf.scale_simple(
-            rect.width, rect.height, gtk.gdk.INTERP_TILES)
-        ctx.set_source_pixbuf(temp_pixbuf, 0, 0)
-        ctx.paint()
-        return True
+        area = widget.get_allocation()
+        cr.rectangle(area.x, area.y, area.width, area.height)
+        cr.clip()
 
-    def load(self, uri):
-        self.src_path = False
-        self.pixbuf = False
-        if os.path.exists(uri):
-            self.src_path = uri
-            self.pixbuf = gtk.gdk.pixbuf_new_from_file(self.src_path)
-            self.ventana.queue_draw()
+        if not self.image_surface:
+            if os.path.exists(self.src_path):
+                self.image_surface = cairo.ImageSurface.create_from_png(self.src_path)
+                self.ventana.queue_draw()
+            cr.set_source_surface(self.image_surface, area.x, area.y)
+            cr.paint()
+
+            self.image_surface = False
+
+        return True
 
     def stop(self):
         try:

@@ -14,8 +14,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gst
-import gobject
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import GObject
+
 import subprocess
 
 import logging
@@ -24,13 +26,13 @@ logger = logging.getLogger('speak')
 supported = True
 
 
-class BaseAudioGrab(gobject.GObject):
+class BaseAudioGrab(GObject.GObject):
     __gsignals__ = {
-        'new-buffer': (gobject.SIGNAL_RUN_FIRST, None, [gobject.TYPE_PYOBJECT])
+        'new-buffer': (GObject.SIGNAL_RUN_FIRST, None, [GObject.TYPE_PYOBJECT])
     }
 
     def __init__(self):
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
         self.pipeline = None
         self.quiet = True
 
@@ -69,7 +71,7 @@ class BaseAudioGrab(gobject.GObject):
 
         def on_buffer(element, buffer, pad):
             # we got a new buffer of data, ask for another
-            gobject.timeout_add(100, self._new_buffer, str(buffer))
+            GObject.timeout_add(100, self._new_buffer, str(buffer))
             return True
 
         sink = self.pipeline.get_by_name('sink')
@@ -87,7 +89,7 @@ class BaseAudioGrab(gobject.GObject):
 
                 logger.debug(message.type)
                 self._was_message = False
-                gobject.timeout_add(500, self._new_buffer, str(buffer))
+                GObject.timeout_add(500, self._new_buffer, str(buffer))
 
             elif  message.type in (gst.MESSAGE_EOS, gst.MESSAGE_ERROR):
                 logger.debug(message.type)
@@ -106,7 +108,9 @@ class BaseAudioGrab(gobject.GObject):
 
 # load proper espeak plugin
 try:
-    import gst
+    gi.require_version('Gst', '1.0')
+    from gi.repository import Gst
+
     gst.element_factory_make('espeak')
     from espeak_gst import AudioGrabGst as AudioGrab
     from espeak_gst import *

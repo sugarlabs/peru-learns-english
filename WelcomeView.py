@@ -19,73 +19,73 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-import gtk
-import gobject
-import pango
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GObject, Pango, GdkPixbuf
 
 from Globales import COLORES, is_xo
 
 
-class WelcomeView(gtk.EventBox):
+class WelcomeView(Gtk.EventBox):
 
     __gsignals__ = {
-    "instructions": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, ( )),
-    "credits": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, ( )),
-    "start": (gobject.SIGNAL_RUN_FIRST,
-        gobject.TYPE_NONE, ( ))}
+    "instructions": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, ( )),
+    "credits": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, ( )),
+    "start": (GObject.SIGNAL_RUN_FIRST,
+        GObject.TYPE_NONE, ( ))}
 
     def __init__(self):
 
-        gtk.EventBox.__init__(self)
+        Gtk.EventBox.__init__(self)
 
-        self.modify_bg(gtk.STATE_NORMAL, COLORES["contenido"])
+        self.modify_bg(Gtk.StateFlags.NORMAL, COLORES["contenido"])
         self.set_border_width(4)
 
 
-        self.image = gtk.Image()
+        self.image = Gtk.Image()
         self.image.set_from_file("Imagenes/ple.png")
 
-        tabla = gtk.Table(rows=10, columns=2, homogeneous=False)
+        tabla = Gtk.Table(rows=10, columns=2, homogeneous=False)
         tabla.set_border_width(16)
         tabla.attach(self.image, 0, 2, 0, 9)
 
-        bb = gtk.HButtonBox()
-        bb.set_layout(gtk.BUTTONBOX_SPREAD)
+        bb = Gtk.HButtonBox()
+        bb.set_layout(Gtk.ButtonBoxStyle.SPREAD)
 
-        b = gtk.Button("")
-        b.set_relief(gtk.RELIEF_NONE)
-        b.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        b = Gtk.Button("")
+        b.set_relief(Gtk.ReliefStyle.NONE)
+        b.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         b.connect("enter-notify-event", self.__color, "manual")
         b.connect("leave-notify-event", self.__decolor, "manual")
         b.connect("clicked", self.__instructions)
-        img = gtk.Image()
+        img = Gtk.Image()
         img.set_from_file("Imagenes/manual_disabled.png")
         b.set_image(img)
         bb.pack_start(b, True, True, 0)
         img.show()
 
-        b = gtk.Button("")
-        b.set_relief(gtk.RELIEF_NONE)
-        b.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        b = Gtk.Button("")
+        b.set_relief(Gtk.ReliefStyle.NONE)
+        b.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         b.connect("enter-notify-event", self.__color, "contributors")
         b.connect("leave-notify-event", self.__decolor, "contributors")
         b.connect("clicked", self.__credits)
-        img = gtk.Image()
+        img = Gtk.Image()
         img.set_from_file("Imagenes/contributors_disabled.png")
         b.set_image(img)
         bb.pack_start(b, True, True, 0)
         img.show()
         bb.show_all()
 
-        b = gtk.Button("")
-        b.set_relief(gtk.RELIEF_NONE)
-        b.modify_bg(gtk.STATE_NORMAL, COLORES["toolbar"])
+        b = Gtk.Button("")
+        b.set_relief(Gtk.ReliefStyle.NONE)
+        b.modify_bg(Gtk.StateFlags.NORMAL, COLORES["toolbar"])
         b.connect("clicked", self.__start)
         #b.connect("enter-notify-event", self.__color, "start")
         #b.connect("leave-notify-event", self.__decolor, "start")
-        img = gtk.Image()
+        img = Gtk.Image()
         img.set_from_file("Imagenes/start.png")
         b.set_image(img)
         bb.pack_start(b, True, True, 0)
@@ -116,12 +116,12 @@ class WelcomeView(gtk.EventBox):
         self.hide()
 
     def fix_scale(self):
-        pixbuf = gtk.gdk.pixbuf_new_from_file("Imagenes/welcome_slide.png")
-        screen = self.parent.get_screen()
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file("Imagenes/welcome_slide.png")
+        screen = self.get_parent().get_screen()
         offset = 220 if not is_xo() else 340
         desired_height = screen.get_height() - offset
         desired_width = pixbuf.get_height() / desired_height * pixbuf.get_width()
-        pixbuf = pixbuf.scale_simple(desired_width , desired_height, gtk.gdk.INTERP_BILINEAR)
+        pixbuf = pixbuf.scale_simple(desired_width , desired_height, 2)
         self.image.set_from_pixbuf(pixbuf)
 
     def run(self):

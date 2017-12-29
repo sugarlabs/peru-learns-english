@@ -19,38 +19,41 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import gi
+gi.require_version('Gtk', '3.0')
+gi.require_version('Gst', '1.0')
+from gi.repository import GObject, Gst
+
 import os
-import gobject
-import gst
 
 from JAMediaBins import JAMedia_Audio_Pipeline
 from JAMediaBins import JAMedia_Video_Pipeline
 
 PR = False
 
-gobject.threads_init()
+GObject.threads_init()
 
 
-class JAMediaReproductor(gobject.GObject):
+class JAMediaReproductor(GObject.GObject):
 
     __gsignals__ = {
-    "endfile": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, []),
-    "estado": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
-    "newposicion": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, (gobject.TYPE_INT,)),
-    "video": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
-    "loading-buffer": (gobject.SIGNAL_RUN_LAST,
-        gobject.TYPE_NONE, (gobject.TYPE_INT, )),
+    "endfile": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, []),
+    "estado": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, (GObject.TYPE_STRING,)),
+    "newposicion": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, (GObject.TYPE_INT,)),
+    "video": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, (GObject.TYPE_BOOLEAN,)),
+    "loading-buffer": (GObject.SIGNAL_RUN_LAST,
+        GObject.TYPE_NONE, (GObject.TYPE_INT, )),
         }
 
     # Estados: playing, paused, None
 
     def __init__(self, ventana_id):
 
-        gobject.GObject.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.nombre = "JAMediaReproductor"
 
@@ -137,10 +140,10 @@ class JAMediaReproductor(gobject.GObject):
 
     def __new_handle(self, reset):
         if self.actualizador:
-            gobject.source_remove(self.actualizador)
+            GObject.source_remove(self.actualizador)
             self.actualizador = False
         if reset:
-            self.actualizador = gobject.timeout_add(500, self.__handle)
+            self.actualizador = GObject.timeout_add(500, self.__handle)
 
     def __handle(self):
         if not self.progressbar:
